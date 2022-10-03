@@ -1,4 +1,4 @@
-function(set_project_warnings project_name)
+function(set_palace_warnings project_name)
     option(WARNINGS_AS_ERRORS "Treat compiler warnings as errors" ON)
 
     set(MSVC_WARNINGS

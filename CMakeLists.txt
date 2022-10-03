@@ -5,7 +5,7 @@ set_property(GLOBAL PROPERTY PREDEFINED_TARGETS_FOLDER "cmake")
 
 project("palace-engine")
 
-set(CMKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 20)
 
 # -----------------------------------------------------------------------------
 # Utilities
@@ -15,27 +15,40 @@ include(cmake/utilities.cmake)
 # -----------------------------------------------------------------------------
 # Compiler Warnings
 # -----------------------------------------------------------------------------
-include(cmake/project_warnings.cmake)
-add_library(project-warnings INTERFACE)
-set_project_warnings(project-warnings)
+include(cmake/warnings.cmake)
+add_library(palace-warnings INTERFACE)
+set_palace_warnings(palace-warnings)
 
 # -----------------------------------------------------------------------------
 # Compile definitions
 # -----------------------------------------------------------------------------
-add_library(project-definitions INTERFACE)
-target_compile_definitions(project-definitions INTERFACE
+add_library(palace-definitions INTERFACE)
+target_compile_definitions(palace-definitions INTERFACE
   $<$<CONFIG:Debug>:PALACE_DEBUG>
 )
 
-if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
-    target_compile_definitions(project-definitions INTERFACE PALACE_COMPILER_CLANG)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
-    target_compile_definitions(project-definitions INTERFACE PALACE_COMPILER_GCC)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
-    target_compile_definitions(project-definitions INTERFACE PALACE_COMPILER_INTEL)
-elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_definitions(project-definitions INTERFACE PALACE_COMPILER_MSVC)
-endif ()
+if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    target_compile_definitions(palace-definitions INTERFACE PALACE_COMPILER_CLANG)
+    set(COMPILER "Clang")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    target_compile_definitions(palace-definitions INTERFACE PALACE_COMPILER_GCC)
+    set(COMPILER "GCC")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
+    target_compile_definitions(palace-definitions INTERFACE PALACE_COMPILER_INTEL)
+    set(COMPILER "Intel")
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    target_compile_definitions(palace-definitions INTERFACE PALACE_COMPILER_MSVC)
+    set(COMPILER "MSVC")
+else()
+    set(COMPILER "UNKNOWN")
+endif()
+
+# -----------------------------------------------------------------------------
+# Compile options
+# -----------------------------------------------------------------------------
+include(cmake/compile_options.cmake)
+add_library(palace-compile-options INTERFACE)
+set_compile_options(palace-compile-options ${COMPILER})
 
 # -----------------------------------------------------------------------------
 # Source files
@@ -48,6 +61,7 @@ add_library("palace-engine" STATIC
         # Header files
         include/debug/assert.hpp
         include/memory/heap_allocator.hpp
+        include/memory/alloc.hpp
         include/os/application_context.hpp
         include/platform/disable_warnings.hpp
         include/platform/enable_warnings.hpp
@@ -70,6 +84,15 @@ create_filter("public" "public")
 create_filter("systems" "systems")
 create_filter("types" "types")
 create_filter("utility" "utility")
+
+# -----------------------------------------------------------------------------
+# Libraries
+# -----------------------------------------------------------------------------
+target_link_libraries("palace-engine" PRIVATE
+        palace-warnings
+        palace-definitions
+        palace-compile-options
+)
 
 # =========================================================
 # gtest
@@ -94,13 +117,16 @@ enable_testing()
 add_executable("palace-engine-test"
     # Source files
     test/sanity_test.cpp
+    test/heap_allocator_test.cpp
 
     # Head files
 )
 
 target_link_libraries("palace-engine-test" PRIVATE
     gtest_main
-    project-warnings
+    palace-warnings
+    palace-definitions
+    palace-compile-options
 )
 
 include(GoogleTest)
