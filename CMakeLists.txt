@@ -59,7 +59,9 @@ add_library("palace-engine" STATIC
         src/platform/platform.cpp
 
         # Header files
+        include/core/dynamic_array.hpp
         include/debug/assert.hpp
+        include/logging/logger.hpp
         include/memory/heap_allocator.hpp
         include/memory/alloc.hpp
         include/os/application_context.hpp
@@ -73,8 +75,10 @@ add_library("palace-engine" STATIC
         include/types/string.hpp
 )
 
+create_filter("core" "core")
 create_filter("debug" "debug")
 create_filter("info" "info")
+create_filter("logging" "logging")
 create_filter("math" "math")
 create_filter("memory" "memory")
 create_filter("os" "os")
@@ -116,8 +120,9 @@ enable_testing()
 
 add_executable("palace-engine-test"
     # Source files
-    test/sanity_test.cpp
+    test/dynamic_array_test.cpp
     test/heap_allocator_test.cpp
+    test/sanity_test.cpp
 
     # Head files
 )

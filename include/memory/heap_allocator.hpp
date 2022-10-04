@@ -172,7 +172,7 @@ public:
 
     template<typename T_Data,
              size_t alignment = PALACE_DEFAULT_MEMORY_ALIGNMENT>
-    T_Data *allocateArrayDebug(int n, std::string_view srcFile, int line,
+    T_Data *allocateArrayDebug(size_t n, std::string_view srcFile, int line,
                                std::string_view msg = "") {
         T_Data *const data = allocateArray<T_Data, alignment>(n);
         trackMemoryAllocation(static_cast<void *>(data), n * sizeof(T_Data),
