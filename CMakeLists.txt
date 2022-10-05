@@ -60,6 +60,7 @@ add_library("palace-engine" STATIC
 
         # Header files
         include/core/dynamic_array.hpp
+        include/core/object_container.hpp
         include/debug/assert.hpp
         include/logging/logger.hpp
         include/memory/heap_allocator.hpp
@@ -72,6 +73,7 @@ add_library("palace-engine" STATIC
         include/platform/platform_detection.hpp
         include/platform/platform_includes.hpp
         include/platform/platform_object.hpp
+        include/types/limits.hpp
         include/types/string.hpp
 )
 

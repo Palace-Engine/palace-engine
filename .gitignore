@@ -6,3 +6,5 @@ workspace/
 
 # Ignore compile_commands.json file used for vim auto-completion
 compile_commands.json
+
+.vscode

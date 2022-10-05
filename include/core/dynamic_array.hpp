@@ -1,7 +1,9 @@
-#pragma once
+#ifndef ATG_PALACE_ENGINE_DYNAMIC_ARRAY_HPP
+#define ATG_PALACE_ENGINE_DYNAMIC_ARRAY_HPP
 
 #include "../debug/assert.hpp"
 #include "../memory/heap_allocator.hpp"
+#include "../types/limits.hpp"
 
 #include <algorithm>
 #include <cstring>
@@ -11,6 +13,9 @@ namespace palace {
 
 template<typename T_Data>
 class DynamicArray {
+public:
+    static constexpr size_t InvalidIndex = size_t_max;
+
 public:
     DynamicArray() {}
     ~DynamicArray() { free(); }
@@ -52,6 +57,16 @@ public:
 
         std::memmove(m_data + index, m_data + index + 1,
                      sizeof(T_Data) * (--m_size - index));
+    }
+
+    size_t findFirst(const T_Data &element) const {
+        for (size_t i = 0; i < m_size; ++i) {
+            if (m_data[i] == element) {
+                return i;
+            }
+        }
+
+        return InvalidIndex;
     }
 
     void fastRemoveFirst(const T_Data &element) {
@@ -110,3 +125,5 @@ private:
 };
 
 }// namespace palace
+
+#endif// ATG_PALACE_ENGINE_DYNAMIC_ARRAY_HPP
