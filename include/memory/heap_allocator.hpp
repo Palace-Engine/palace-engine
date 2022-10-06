@@ -7,6 +7,7 @@
 #include <cassert>
 #include <cstdint>
 #include <cstdlib>
+#include <mutex>
 #include <new>
 #include <string_view>
 #include <vector>
@@ -14,45 +15,36 @@
 #define PALACE_DEFAULT_MEMORY_ALIGNMENT __STDCPP_DEFAULT_NEW_ALIGNMENT__
 
 #define debug_palace_new(type, ...)                                            \
-    palace::HeapAllocator::get().allocateDebug<type>(                          \
-            __FILE__, __LINE__ __VA_OPT__(, ) __VA_ARGS__)
-#define debug_palace_free(memory) palace::HeapAllocator::get().freeDebug(memory)
+    allocateDebug<type>(__FILE__, __LINE__ __VA_OPT__(, ) __VA_ARGS__)
+#define debug_palace_free(memory) freeDebug(memory)
 
 #define debug_palace_aligned_new(type, alignment, ...)                         \
-    palace::HeapAllocator::get().allocateDebug<type, (alignment)>(             \
-            __FILE__, __LINE__ __VA_OPT__(, ) __VA_ARGS__)
-#define debug_palace_aligned_free(memory)                                      \
-    palace::HeapAllocator::get().freeDebug(memory)
+    allocateDebug<type, (alignment)>(__FILE__,                                 \
+                                     __LINE__ __VA_OPT__(, ) __VA_ARGS__)
+#define debug_palace_aligned_free(memory) freeDebug(memory)
 
 #define debug_palace_new_array(type, n, ...)                                   \
-    palace::HeapAllocator::get().allocateArrayDebug<type>(                     \
-            n, __FILE__, __LINE__ __VA_OPT__(, ) __VA_ARGS__)
-#define debug_palace_free_array(memory)                                        \
-    palace::HeapAllocator::get().freeArrayDebug(memory)
+    allocateArrayDebug<type>(n, __FILE__, __LINE__ __VA_OPT__(, ) __VA_ARGS__)
+#define debug_palace_free_array(memory) freeArrayDebug(memory)
 
 #define debug_palace_aligned_new_array(type, alignment, n, ...)                \
-    palace::HeapAllocator::get().allocateArrayDebug<type, (alignment)>(        \
-            n, __FILE__, __LINE__ __VA_OPT__(, ) __VA_ARGS__)
-#define debug_palace_aligned_free_array(memory)                                \
-    palace::HeapAllocator::get().freeArrayDebug(memory)
+    allocateArrayDebug<type, (alignment)>(n, __FILE__,                         \
+                                          __LINE__ __VA_OPT__(, ) __VA_ARGS__)
+#define debug_palace_aligned_free_array(memory) freeArrayDebug(memory)
 
-#define release_palace_new(type) palace::HeapAllocator()::get().allocate<type>()
-#define release_palace_free(memory) palace::HeapAllocator::get().free(memory)
+#define release_palace_new(type) allocate<type>()
+#define release_palace_free(memory) free(memory)
 
 #define release_palace_aligned_new(type, alignment)                            \
-    palace::HeapAllocator().get().allocate<type, (alignment)>()
-#define release_palace_aligned_free(memory)                                    \
-    palace::HeapAllocator::get().free(memory)
+    allocate<type, (alignment)>()
+#define release_palace_aligned_free(memory) free(memory)
 
-#define release_palace_new_array(type, n)                                      \
-    palace::HeapAllocator()::get().allocate<type>(n)
-#define release_palace_free_array(memory)                                      \
-    palace::HeapAllocator::get().freeArray(memory)
+#define release_palace_new_array(type, n) allocate<type>(n)
+#define release_palace_free_array(memory) freeArray(memory)
 
 #define release_palace_aligned_new_array(type, alignment, n)                   \
-    palace::HeapAllocator().get().allocate<type, (alignment)>(n)
-#define release_palace_aligned_free_array(memory)                              \
-    palace::HeapAllocator::get().freeArray(memory)
+    allocate<type, (alignment)>(n)
+#define release_palace_aligned_free_array(memory) freeArray(memory)
 
 #if defined(PALACE_DEBUG)
 #define palace_new debug_palace_new
@@ -93,6 +85,12 @@ private:
     };
 
 public:
+    HeapAllocator(const HeapAllocator &) = delete;
+    HeapAllocator() {}
+    ~HeapAllocator() {
+        palace_assert(getActiveAllocations() == 0, "Unfreed memory");
+    }
+
     // Alignment is a template parameter for the following reasons:
     // - In case aligned allocations are found to have a performance
     //   cost and need to be separated from regular allocations
@@ -194,21 +192,18 @@ public:
     inline size_t getTotalAllocations() { return m_totalAllocations; }
     const MemoryBlock &getActiveAllocation(int i) { return m_memoryBlocks[i]; }
 
-    inline static HeapAllocator &get() {
-        static HeapAllocator instance;
-        return instance;
+    void clearRecords() {
+        std::lock_guard<std::mutex> guard(m_trackingGuard);
+        m_memoryBlocks.clear();
+        m_memoryUsed = 0;
     }
 
 private:
-    HeapAllocator(const HeapAllocator &) = delete;
-    HeapAllocator() {}
-    ~HeapAllocator() {
-        palace_assert(getActiveAllocations() == 0, "Unfreed memory");
-    }
-
     void trackMemoryAllocation(void *address, size_t size,
                                std::string_view filename, int line,
                                std::string_view message) {
+        std::lock_guard<std::mutex> guard(m_trackingGuard);
+
         MemoryBlock newBlock;
         newBlock.address = address;
         newBlock.size = size;
@@ -223,6 +218,8 @@ private:
     }
 
     bool trackMemoryFree(void *address) {
+        std::lock_guard<std::mutex> guard(m_trackingGuard);
+
         for (size_t i = 0; i < m_memoryBlocks.size(); ++i) {
             if (m_memoryBlocks[i].address == address) {
                 m_memoryUsed -= m_memoryBlocks[i].size;
@@ -238,6 +235,7 @@ private:
     }
 
 private:
+    std::mutex m_trackingGuard;
     size_t m_memoryUsed = 0;
     size_t m_totalAllocations = 0;
     size_t m_allocationId = 0;

@@ -23,10 +23,8 @@ public:
     }
 
     inline void free(size_t i) {
-        T_Base *object = m_array[i];
         m_array.fastRemove(i);
-
-        palace_aligned_free(object);
+        palace_aligned_free(m_array[i]);
     }
 
     void destroy() {

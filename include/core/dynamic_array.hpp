@@ -11,14 +11,31 @@
 
 namespace palace {
 
+class DynamicArrayAllocator {
+public:
+    static HeapAllocator *s_defaultAllocator;
+
+public:
+    DynamicArrayAllocator() = delete;
+    DynamicArrayAllocator(const DynamicArrayAllocator &) = delete;
+    ~DynamicArrayAllocator() = delete;
+
+    static void setDefaultAllocator(HeapAllocator *allocator) {
+        s_defaultAllocator = allocator;
+    }
+};
+
 template<typename T_Data>
 class DynamicArray {
 public:
     static constexpr size_t InvalidIndex = size_t_max;
 
 public:
-    DynamicArray() {}
+    DynamicArray() { m_allocator = DynamicArrayAllocator::s_defaultAllocator; }
     ~DynamicArray() { free(); }
+
+    void setAllocator(HeapAllocator *allocator) { m_allocator = allocator; }
+    HeapAllocator *allocator() const { return m_allocator; }
 
     const T_Data &append(const T_Data &data) {
         if (m_size >= m_capacity) { resize(m_capacity * 2 + 1); }
@@ -61,9 +78,7 @@ public:
 
     size_t findFirst(const T_Data &element) const {
         for (size_t i = 0; i < m_size; ++i) {
-            if (m_data[i] == element) {
-                return i;
-            }
+            if (m_data[i] == element) { return i; }
         }
 
         return InvalidIndex;
@@ -95,7 +110,7 @@ public:
     void truncate(size_t size) { m_size = (size < m_size) ? size : m_size; }
 
     void resize(size_t size) {
-        T_Data *newData = palace_new_array(T_Data, size);
+        T_Data *newData = m_allocator->palace_new_array(T_Data, size);
         const size_t newSize = (size < m_size) ? size : m_size;
 
         if (m_data != nullptr) {
@@ -109,7 +124,7 @@ public:
     }
 
     void free() {
-        if (m_data != nullptr) { palace_free_array(m_data); }
+        if (m_data != nullptr) { m_allocator->palace_free_array(m_data); }
 
         m_capacity = 0;
         m_size = 0;
@@ -119,6 +134,7 @@ public:
     inline size_t capacity() const { return m_capacity; }
 
 private:
+    HeapAllocator *m_allocator = nullptr;
     size_t m_capacity = 0;
     size_t m_size = 0;
     T_Data *m_data = nullptr;

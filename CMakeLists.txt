@@ -55,6 +55,8 @@ set_compile_options(palace-compile-options ${COMPILER})
 # -----------------------------------------------------------------------------
 add_library("palace-engine" STATIC
         # Source files
+        src/core/dynamic_array.cpp
+        src/memory/default_allocator.cpp
         src/platform/platform_object.cpp
         src/platform/platform.cpp
 
@@ -63,8 +65,9 @@ add_library("palace-engine" STATIC
         include/core/object_container.hpp
         include/debug/assert.hpp
         include/logging/logger.hpp
-        include/memory/heap_allocator.hpp
         include/memory/alloc.hpp
+        include/memory/default_allocator.hpp
+        include/memory/heap_allocator.hpp
         include/os/application_context.hpp
         include/platform/disable_warnings.hpp
         include/platform/enable_warnings.hpp
@@ -134,6 +137,7 @@ target_link_libraries("palace-engine-test" PRIVATE
     palace-warnings
     palace-definitions
     palace-compile-options
+    palace-engine
 )
 
 include(GoogleTest)

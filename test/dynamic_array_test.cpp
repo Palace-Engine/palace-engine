@@ -1,6 +1,7 @@
 #include <gtest/gtest.h>
 
 #include "../include/core/dynamic_array.hpp"
+#include "../include/memory/default_allocator.hpp"
 
 TEST(DynamicArrayTest, SanityTest) {
     palace::DynamicArray<int> d_arr;
@@ -15,7 +16,7 @@ TEST(DynamicArrayTest, SanityTest) {
 
     d_arr.free();
 
-    EXPECT_EQ(palace::HeapAllocator::get().getActiveAllocations(), 0);
+    EXPECT_EQ(d_arr.allocator()->getActiveAllocations(), 0);
 }
 
 TEST(DynamicArrayTest, Grow) {
@@ -31,7 +32,7 @@ TEST(DynamicArrayTest, Grow) {
 
     d_arr.free();
 
-    EXPECT_EQ(palace::HeapAllocator::get().getActiveAllocations(), 0);
+    EXPECT_EQ(d_arr.allocator()->getActiveAllocations(), 0);
 }
 
 TEST(DynamicArrayTest, Insert) {
@@ -47,7 +48,7 @@ TEST(DynamicArrayTest, Insert) {
 
     d_arr.free();
 
-    EXPECT_EQ(palace::HeapAllocator::get().getActiveAllocations(), 0);
+    EXPECT_EQ(d_arr.allocator()->getActiveAllocations(), 0);
 }
 
 TEST(DynamicArrayTest, FastRemove) {
@@ -61,7 +62,7 @@ TEST(DynamicArrayTest, FastRemove) {
 
     d_arr.free();
 
-    EXPECT_EQ(palace::HeapAllocator::get().getActiveAllocations(), 0);
+    EXPECT_EQ(d_arr.allocator()->getActiveAllocations(), 0);
 }
 
 TEST(DynamicArrayTest, Remove) {
@@ -80,5 +81,5 @@ TEST(DynamicArrayTest, Remove) {
 
     d_arr.free();
 
-    EXPECT_EQ(palace::HeapAllocator::get().getActiveAllocations(), 0);
+    EXPECT_EQ(d_arr.allocator()->getActiveAllocations(), 0);
 }
