@@ -37,7 +37,9 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "Intel")
     target_compile_definitions(palace-definitions INTERFACE PALACE_COMPILER_INTEL)
     set(COMPILER "Intel")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-    target_compile_definitions(palace-definitions INTERFACE PALACE_COMPILER_MSVC)
+    target_compile_definitions(palace-definitions INTERFACE
+        PALACE_COMPILER_MSVC
+        _CRT_SECURE_NO_WARNINGS)
     set(COMPILER "MSVC")
 else()
     set(COMPILER "UNKNOWN")
@@ -57,6 +59,8 @@ add_library("palace-engine" STATIC
         # Source files
         src/core/dynamic_array.cpp
         src/memory/default_allocator.cpp
+        src/logging/log_target.cpp
+        src/logging/logger.cpp
         src/platform/platform_object.cpp
         src/platform/platform.cpp
 
@@ -64,6 +68,8 @@ add_library("palace-engine" STATIC
         include/core/dynamic_array.hpp
         include/core/object_container.hpp
         include/debug/assert.hpp
+        include/logging/log_level.hpp
+        include/logging/log_target.hpp
         include/logging/logger.hpp
         include/memory/alloc.hpp
         include/memory/default_allocator.hpp
@@ -127,6 +133,7 @@ add_executable("palace-engine-test"
     # Source files
     test/dynamic_array_test.cpp
     test/heap_allocator_test.cpp
+    test/logger_test.cpp
     test/sanity_test.cpp
 
     # Head files
