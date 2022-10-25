@@ -53,14 +53,30 @@ add_library(palace-compile-options INTERFACE)
 set_compile_options(palace-compile-options ${COMPILER})
 
 # -----------------------------------------------------------------------------
+# Dependencies
+# -----------------------------------------------------------------------------
+add_subdirectory(dependencies/math)
+set_property(TARGET atg-math PROPERTY FOLDER "math")
+set_property(TARGET atg-math-test PROPERTY FOLDER "math")
+
+# -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
 add_library("palace-engine" STATIC
         # Source files
         src/core/dynamic_array.cpp
+        src/core/object_container.cpp
         src/memory/default_allocator.cpp
         src/logging/log_target.cpp
         src/logging/logger.cpp
+        src/os/application_context.cpp
+        src/os/display_device.cpp
+        src/os/window.cpp
+        src/os/window_manager.cpp
+        src/os/windows/windows_application_context.cpp
+        src/os/windows/windows_display_device.cpp
+        src/os/windows/windows_window.cpp
+        src/os/windows/windows_window_manager.cpp
         src/platform/platform_object.cpp
         src/platform/platform.cpp
 
@@ -71,10 +87,18 @@ add_library("palace-engine" STATIC
         include/logging/log_level.hpp
         include/logging/log_target.hpp
         include/logging/logger.hpp
+        include/math/math.hpp
         include/memory/alloc.hpp
         include/memory/default_allocator.hpp
         include/memory/heap_allocator.hpp
         include/os/application_context.hpp
+        include/os/display_device.hpp
+        include/os/window.hpp
+        include/os/window_manager.hpp
+        include/os/windows/windows_application_context.hpp
+        include/os/windows/windows_display_device.hpp
+        include/os/windows/windows_window.hpp
+        include/os/windows/windows_window_manager.hpp
         include/platform/disable_warnings.hpp
         include/platform/enable_warnings.hpp
         include/platform/entry_point.hpp
@@ -134,6 +158,7 @@ add_executable("palace-engine-test"
     test/dynamic_array_test.cpp
     test/heap_allocator_test.cpp
     test/logger_test.cpp
+    test/object_container_test.cpp
     test/sanity_test.cpp
 
     # Head files

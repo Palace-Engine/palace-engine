@@ -3,8 +3,9 @@
 
 #include "../os/application_context.hpp"
 #include "platform_detection.hpp"
+#include "platform_includes.hpp"
 
-int palaceMain(rebar::ApplicationContext *context = nullptr);
+int palaceMain(palace::ApplicationContext *context = nullptr);
 
 #if PALACE_PLATFORM_WINDOWS
 #if PALACE_PLATFORM_WINDOWS_CONSOLE_MODE
@@ -21,27 +22,22 @@ int main(int argc, char *argv[])
     return returnValue;
 }
 #else
-#include <Windows.h>
-
 #include "../os/windows/windows_application_context.hpp"
 
 int APIENTRY WINAPI WinMain(_In_ HINSTANCE hInstance,
                             _In_opt_ HINSTANCE hPrevInstance,
                             _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
-    rebar::WindowsApplicationContext::Parameters parameters = {
+    palace::WindowsApplicationContext::Parameters parameters = {
             hInstance, hPrevInstance, lpCmdLine, nCmdShow};
-    rebar::ApplicationContext::initialize<rebar::WindowsApplicationContext>(
-            parameters);
+    palace::WindowsApplicationContext context;
+    context.initialize(parameters);
 
-    const int returnValue = rebarMain(rebar::ApplicationContext::get());
-    rebar::ApplicationContext::free();
-
-    return returnValue;
+    return palaceMain(&context);
 }
 #endif// PALACE_PLATFORM_WINDOWS_CONSOLE_MODE
 #else
-int main(int argc, char *argv[]) { return rebarMain(); }
+int main(int argc, char *argv[]) { return palaceMain(); }
 #endif
 
 #endif// ATG_PALACE_ENGINE_ENTRY_POINT_HPP

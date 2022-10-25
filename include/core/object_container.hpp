@@ -5,16 +5,36 @@
 
 namespace palace {
 
-template<typename T_Object, typename T_Base,
+class ObjectContainerAllocator {
+public:
+    static HeapAllocator *s_defaultAllocator;
+
+public:
+    ObjectContainerAllocator() = delete;
+    ObjectContainerAllocator(const ObjectContainerAllocator &) = delete;
+    ~ObjectContainerAllocator() = delete;
+
+    static void setDefaultAllocator(HeapAllocator *allocator) {
+        s_defaultAllocator = allocator;
+    }
+};
+
+template<typename T_Base, typename T_Object = T_Base,
          size_t alignment = PALACE_DEFAULT_MEMORY_ALIGNMENT>
 class ObjectContainer {
 public:
-    ObjectContainer() {}
-    virtual ~ObjectContainer() { destroy(); }
+    using BaseContainer = ObjectContainer<T_Base, T_Base, alignment>;
+
+public:
+    ObjectContainer() {
+        m_allocator = ObjectContainerAllocator::s_defaultAllocator;
+    }
+    virtual ~ObjectContainer() { free(); }
 
     template<typename T_NewObject = T_Object>
     inline T_Object *create() {
-        T_Object *const newObject = palace_aligned_new(T_NewObject, alignment);
+        T_Object *const newObject =
+                m_allocator->palace_aligned_new(T_NewObject, alignment);
         palace_assert(dynamic_cast<T_Base *>(newObject) != nullptr);
 
         m_array.append(static_cast<T_Base *>(newObject));
@@ -22,12 +42,14 @@ public:
         return newObject;
     }
 
+    inline size_t size() const { return m_array.size(); }
+
     inline void free(size_t i) {
+        m_allocator->palace_aligned_free(m_array[i]);
         m_array.fastRemove(i);
-        palace_aligned_free(m_array[i]);
     }
 
-    void destroy() {
+    void free() {
         const size_t n = m_array.size();
         for (size_t i = 0; i < n; ++i) { free(0); }
     }
@@ -39,11 +61,19 @@ public:
         return static_cast<T_Object *>(object);
     }
 
+    inline BaseContainer *toBase() {
+        return reinterpret_cast<BaseContainer *>(this);
+    }
+
     DynamicArray<T_Base *> &container() const { return m_array; }
 
 private:
+    HeapAllocator *m_allocator = nullptr;
     DynamicArray<T_Base *> m_array;
 };
+
+template<typename T_Base, size_t alignment = PALACE_DEFAULT_MEMORY_ALIGNMENT>
+using BaseObjectContainer = ObjectContainer<T_Base, T_Base, alignment>;
 
 }// namespace palace
 
