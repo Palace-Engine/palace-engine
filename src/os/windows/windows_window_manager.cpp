@@ -7,6 +7,10 @@ palace::WindowsWindowManager::WindowsWindowManager()
     : WindowManager(Platform::Windows, m_windows.toBase(),
                     m_displayDevices.toBase()) {
     m_context = nullptr;
+
+#if PALACE_PLATFORM_WINDOWS
+    m_windowClasses = 0;
+#endif
 }
 
 palace::WindowsWindowManager::~WindowsWindowManager() {}
@@ -19,13 +23,14 @@ palace::WindowsWindowManager::spawnWindow(const Window::Parameters &params) {
                                     : nullptr;
     const UINT style = WindowsWindow::internalToWindowsStyle(params.style);
     HWND parentHandle = (parent != nullptr) ? parent->m_handle : NULL;
-    ATOM windowsClass = registerWindowsClass();
+    ATOM windowClass;
+    if (!registerWindowsClass(&windowClass)) { return nullptr; }
 
     WindowsWindow *newWindow = m_windows.create();
     newWindow->initialize(params);
     newWindow->m_manager = this;
     newWindow->m_handle = CreateWindow(
-            MAKEINTATOM(windowsClass), params.title.c_str(), style,
+            MAKEINTATOM(windowClass), params.title.c_str(), style,
             params.position.x(), params.position.y(), params.size.w(),
             params.size.h(), parentHandle, NULL, m_context->currentInstance(),
             reinterpret_cast<LPVOID>(newWindow));
@@ -66,7 +71,10 @@ palace::WindowsWindowManager::findIndex(const WindowsWindow *window) const {
     return 0;
 }
 
-ATOM palace::WindowsWindowManager::registerWindowsClass() {
+bool palace::WindowsWindowManager::registerWindowsClass(ATOM *windowClass) {
+    const std::string windowClassName =
+            "PalaceWindowClass" + std::to_string(m_windowClasses++);
+
     WNDCLASSEX wc;
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -78,10 +86,16 @@ ATOM palace::WindowsWindowManager::registerWindowsClass() {
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
     wc.hbrBackground = NULL;
     wc.lpszMenuName = NULL;
-    wc.lpszClassName = "PalaceWindowClass";
+    wc.lpszClassName = windowClassName.c_str();
     wc.hIconSm = NULL;
 
-    return RegisterClassEx(&wc);
+    ATOM newWindowClass = RegisterClassEx(&wc);
+    if (newWindowClass == 0) {
+        return false;
+    } else {
+        *windowClass = newWindowClass;
+        return true;
+    }
 }
 
 BOOL CALLBACK palace::WindowsWindowManager::monitorCallback(

@@ -32,13 +32,14 @@ public:
 
 private:
 #if PALACE_PLATFORM_WINDOWS
-    ATOM registerWindowsClass();
+    bool registerWindowsClass(ATOM *windowClass);
     struct MonitorCallBackContext {
         WindowsWindowManager *windowManager;
     };
 
     static BOOL CALLBACK monitorCallback(HMONITOR hMonitor, HDC hdcMonitor,
                                          LPRECT lprcMonitor, LPARAM dwData);
+    size_t m_windowClasses;
 #endif
 
 private:

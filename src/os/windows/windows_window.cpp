@@ -20,7 +20,8 @@ void palace::WindowsWindow::setState(State state) {
     Window::setState(state);
 
 #if PALACE_PLATFORM_WINDOWS
-
+    DestroyWindow(m_handle);
+    m_handle = NULL;
 #endif
 }
 
