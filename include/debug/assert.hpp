@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ATG_PALACE_ENGINE_ASSERT_HPP
+#define ATG_PALACE_ENGINE_ASSERT_HPP
 
 #include <iostream>
 #include <string_view>
@@ -28,3 +29,5 @@ void internalAssert(bool condition, std::string_view file, int line,
 }
 
 }// namespace palace
+
+#endif /* ATG_PALACE_ENGINE_ASSERT_HPP */
