@@ -82,6 +82,7 @@ add_library("palace-engine" STATIC
 
         # Header files
         include/core/dynamic_array.hpp
+        include/core/object.hpp
         include/core/object_container.hpp
         include/debug/assert.hpp
         include/logging/log_level.hpp
@@ -158,6 +159,7 @@ add_executable("palace-engine-test"
     test/dynamic_array_test.cpp
     test/heap_allocator_test.cpp
     test/logger_test.cpp
+    test/object_test.cpp
     test/object_container_test.cpp
     test/sanity_test.cpp
 

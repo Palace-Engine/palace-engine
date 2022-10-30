@@ -23,6 +23,9 @@ public:
 
     virtual size_t findId() const override;
 
+protected:
+    virtual void initialize(const Parameters &parameters) override;
+
 private:
 #if PALACE_PLATFORM_WINDOWS
     static UINT internalToWindowsStyle(Window::Style style);

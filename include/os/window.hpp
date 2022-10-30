@@ -11,6 +11,8 @@ class WindowEventHandler;
 class WindowManager;
 
 class Window : public PlatformObject {
+    friend WindowManager;
+
 public:
     enum class State { Visible, Hidden, Maximized, Minimized, Closed, Unknown };
     enum class Style { Windowed, Popup, Unknown };
@@ -27,7 +29,6 @@ public:
 public:
     virtual ~Window();
 
-    virtual void initialize(const Parameters &parameters);
     virtual void setState(State state) { m_state = state; }
     virtual void setStyle(Style style) { m_style = style; }
     virtual void setFullscreen(DisplayDevice *displayDevice);
@@ -50,6 +51,8 @@ public:
 
 protected:
     Window(Platform platform);
+
+    virtual void initialize(const Parameters &parameters);
 
     void updateSizeCache(const math::ivec2 &size);
     void updatePositionCache(const math::ivec2 &position);

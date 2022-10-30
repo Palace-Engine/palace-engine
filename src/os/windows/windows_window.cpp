@@ -16,6 +16,10 @@ size_t palace::WindowsWindow::findId() const {
     return m_manager->findIndex(this);
 }
 
+void palace::WindowsWindow::initialize(const Parameters &parameters) {
+    Window::initialize(parameters);
+}
+
 void palace::WindowsWindow::setState(State state) {
     Window::setState(state);
 

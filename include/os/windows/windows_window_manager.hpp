@@ -48,8 +48,8 @@ private:
 
 private:
     WindowsApplicationContext *m_context;
-    ObjectContainer<Window, WindowsWindow> m_windows;
-    ObjectContainer<DisplayDevice, WindowsDisplayDevice> m_displayDevices;
+    ObjectList<Window, WindowsWindow> m_windows;
+    ObjectList<DisplayDevice, WindowsDisplayDevice> m_displayDevices;
 };
 
 }// namespace rebar

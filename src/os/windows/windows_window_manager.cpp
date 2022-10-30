@@ -5,7 +5,8 @@
 
 palace::WindowsWindowManager::WindowsWindowManager()
     : WindowManager(Platform::Windows, m_windows.toBase(),
-                    m_displayDevices.toBase()) {
+                    m_displayDevices.toBase()),
+      m_windows(this), m_displayDevices(this) {
     m_context = nullptr;
 
 #if PALACE_PLATFORM_WINDOWS

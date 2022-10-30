@@ -9,10 +9,10 @@
 
 namespace palace {
 
-class WindowManager : PlatformObject {
+class WindowManager : public PlatformObject {
 protected:
-    WindowManager(Platform platform, BaseObjectContainer<Window> *windows,
-                  BaseObjectContainer<DisplayDevice> *displayDevices);
+    WindowManager(Platform platform, ObjectList<Window> *windows,
+                  ObjectList<DisplayDevice> *displayDevices);
 
 public:
     virtual ~WindowManager();
@@ -20,9 +20,11 @@ public:
     virtual void free();
 
     virtual Window *spawnWindow(const Window::Parameters &params = {});
-    size_t windowCount() const { return m_windows->size(); }
-    Window *getWindow(size_t index) { return (*m_windows)[index]; }
-    void freeWindow(Window *window);
+    void freeWindow(Window *&window);
+    inline const ObjectList<Window> &windows() const { return *m_windows; }
+    inline const ObjectList<DisplayDevice> &displayDevices() const {
+        return *m_displayDevices;
+    }
 
     virtual void setCursorPosition(const math::ivec2 & /* pos */) {}
     virtual void confineCursor(Window * /* window */) {
@@ -37,19 +39,16 @@ public:
     virtual void updateDisplayDevices() {}
     virtual void processMessages() {}
 
-    DisplayDevice *getDisplayDevice(size_t index) const;
-    size_t displayDeviceCount() const;
-
     void freeInactiveWindows();
     void freeAllWindows();
 
 protected:
-    void freeDisplayDevice(size_t index);
+    void freeDisplayDevice(DisplayDevice *&device);
     DisplayDevice *findDisplayDevice(const string &device_name);
 
 private:
-    BaseObjectContainer<Window> *m_windows;
-    BaseObjectContainer<DisplayDevice> *m_displayDevices;
+    Object::ObjectList<Window> *m_windows;
+    Object::ObjectList<DisplayDevice> *m_displayDevices;
 
     bool m_cursorVisible;
     bool m_cursorConfined;

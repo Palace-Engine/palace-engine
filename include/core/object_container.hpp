@@ -32,8 +32,8 @@ public:
     virtual ~ObjectContainer() { free(); }
 
     template<typename T_NewObject = T_Object>
-    inline T_Object *create() {
-        T_Object *const newObject =
+    inline T_NewObject *create() {
+        T_NewObject *const newObject =
                 m_allocator->palace_aligned_new(T_NewObject, alignment);
         palace_assert(dynamic_cast<T_Base *>(newObject) != nullptr);
 
