@@ -7,5 +7,4 @@ class TestChild : public TestBase {};
 
 TEST(ObjectContainerTest, SanityTest) {
     palace::ObjectContainer<TestBase, TestChild> test;
-    palace::ObjectContainer<TestBase, TestBase> *ptest = test.toBase();
 }

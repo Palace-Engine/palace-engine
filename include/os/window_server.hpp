@@ -1,5 +1,5 @@
-#ifndef ATG_PALACE_ENGINE_WINDOW_MANAGER_HPP
-#define ATG_PALACE_ENGINE_WINDOW_MANAGER_HPP
+#ifndef ATG_PALACE_ENGINE_WINDOW_SERVER_HPP
+#define ATG_PALACE_ENGINE_WINDOW_SERVER_HPP
 
 #include "../platform/platform_object.hpp"
 
@@ -9,20 +9,23 @@
 
 namespace palace {
 
-class WindowManager : public PlatformObject {
+class WindowServer : public PlatformObject {
+    using WindowContainer = BaseObjectContainer<Window>;
+    using DisplayDeviceContainer = BaseObjectContainer<DisplayDevice>;
+
 protected:
-    WindowManager(Platform platform, ObjectList<Window> *windows,
-                  ObjectList<DisplayDevice> *displayDevices);
+    WindowServer(Platform platform, WindowContainer *windows,
+                 DisplayDeviceContainer *displayDevices);
 
 public:
-    virtual ~WindowManager();
+    virtual ~WindowServer();
 
     virtual void free();
 
     virtual Window *spawnWindow(const Window::Parameters &params = {});
     void freeWindow(Window *&window);
-    inline const ObjectList<Window> &windows() const { return *m_windows; }
-    inline const ObjectList<DisplayDevice> &displayDevices() const {
+    inline const WindowContainer &windows() const { return *m_windows; }
+    inline const DisplayDeviceContainer &displayDevices() const {
         return *m_displayDevices;
     }
 
@@ -47,13 +50,14 @@ protected:
     DisplayDevice *findDisplayDevice(const string &device_name);
 
 private:
-    Object::ObjectList<Window> *m_windows;
-    Object::ObjectList<DisplayDevice> *m_displayDevices;
-
     bool m_cursorVisible;
     bool m_cursorConfined;
+
+protected:
+    WindowContainer *m_windows;
+    DisplayDeviceContainer *m_displayDevices;
 };
 
 }// namespace palace
 
-#endif /* ATG_PALACE_ENGINE_WINDOW_MANAGER_HPP */
+#endif /* ATG_PALACE_ENGINE_WINDOW_SERVER_HPP */

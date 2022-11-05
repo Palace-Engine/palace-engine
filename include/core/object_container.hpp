@@ -19,11 +19,24 @@ public:
     }
 };
 
-template<typename T_Base, typename T_Object = T_Base,
-         size_t alignment = PALACE_DEFAULT_MEMORY_ALIGNMENT>
-class ObjectContainer {
+template<typename T_Base, size_t alignment = PALACE_DEFAULT_MEMORY_ALIGNMENT>
+class BaseObjectContainer {
 public:
-    using BaseContainer = ObjectContainer<T_Base, T_Base, alignment>;
+    BaseObjectContainer() {}
+    virtual ~BaseObjectContainer() {}
+
+    virtual size_t size() const = 0;
+    virtual T_Base *get(size_t i) const = 0;
+    virtual void free(size_t i) = 0;
+    virtual void free(T_Base *object) = 0;
+    virtual void free() = 0;
+    inline T_Base *operator[](size_t i) const { return get(i); }
+};
+
+template<typename T_Base, typename T_Object,
+         size_t alignment = PALACE_DEFAULT_MEMORY_ALIGNMENT>
+class ObjectContainer : public BaseObjectContainer<T_Base, alignment> {
+    using T_BaseContainer = BaseObjectContainer<T_Base, alignment>;
 
 public:
     ObjectContainer() {
@@ -31,49 +44,65 @@ public:
     }
     virtual ~ObjectContainer() { free(); }
 
+    virtual inline size_t size() const override { return m_array.size(); }
+    virtual inline T_Base *get(size_t i) const override {
+        return static_cast<T_Base *>(m_array[i]);
+    }
+    virtual inline void free(size_t i) override {
+        m_allocator->palace_aligned_free(m_array[i]);
+        m_array.fastRemove(i);
+    }
+    virtual inline void free(T_Base *object) override {
+        free(findFirstBase(object));
+    }
+    inline void free(T_Object *object) { free(findFirst(object)); }
+
     template<typename T_NewObject = T_Object>
     inline T_NewObject *create() {
         T_NewObject *const newObject =
                 m_allocator->palace_aligned_new(T_NewObject, alignment);
-        palace_assert(dynamic_cast<T_Base *>(newObject) != nullptr);
-
-        m_array.append(static_cast<T_Base *>(newObject));
+        m_array.append(static_cast<T_Object *>(newObject));
 
         return newObject;
     }
 
-    inline size_t size() const { return m_array.size(); }
+    inline size_t findFirst(const T_Object *object) const {
+        const size_t size = m_array.size();
+        for (size_t i = 0; i < size; ++i) {
+            if (m_array[i] == object) { return i; }
+        }
 
-    inline void free(size_t i) {
-        m_allocator->palace_aligned_free(m_array[i]);
-        m_array.fastRemove(i);
+        return -1;
+    }
+
+    inline size_t findFirstBase(const T_Base *object) const {
+        const size_t size = m_array.size();
+        for (size_t i = 0; i < size; ++i) {
+            if (static_cast<T_Base *>(m_array[i]) == object) { return i; }
+        }
+
+        return -1;
     }
 
     void free() {
         const size_t n = m_array.size();
-        for (size_t i = 0; i < n; ++i) { free(0); }
+        for (size_t i = 0; i < n; ++i) { free(static_cast<size_t>(0)); }
     }
 
     inline T_Object *operator[](size_t index) const {
-        T_Base *const object = m_array[index];
-        palace_assert(dynamic_cast<T_Object *>(object) != nullptr);
-
-        return static_cast<T_Object *>(object);
+        T_Object *const object = m_array[index];
+        return object;
     }
 
-    inline BaseContainer *toBase() {
-        return reinterpret_cast<BaseContainer *>(this);
+    DynamicArray<T_Object *> &container() const { return m_array; }
+    T_BaseContainer *base() {
+        return static_cast<T_BaseContainer *>(this);
     }
-
-    DynamicArray<T_Base *> &container() const { return m_array; }
 
 private:
     HeapAllocator *m_allocator = nullptr;
-    DynamicArray<T_Base *> m_array;
+    DynamicArray<T_Object *> m_array;
 };
-
-template<typename T_Base, size_t alignment = PALACE_DEFAULT_MEMORY_ALIGNMENT>
-using BaseObjectContainer = ObjectContainer<T_Base, T_Base, alignment>;
 
 }// namespace palace
 

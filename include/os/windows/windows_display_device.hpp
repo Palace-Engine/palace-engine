@@ -5,9 +5,9 @@
 
 namespace palace {
 
-class WindowsWindowManager;
+class WindowsWindowServer;
 class WindowsDisplayDevice : public DisplayDevice {
-    friend WindowsWindowManager;
+    friend WindowsWindowServer;
 
 public:
     WindowsDisplayDevice();

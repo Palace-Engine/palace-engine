@@ -5,7 +5,7 @@
 
 #include "../core/dynamic_array.hpp"
 #include "../types/string.hpp"
-#include "window_manager.hpp"
+#include "window_server.hpp"
 
 namespace palace {
 
@@ -20,20 +20,20 @@ public:
     ApplicationContext();
     virtual ~ApplicationContext();
 
-    WindowManager *windowManager() { return m_windowManager; }
+    WindowServer *windowServer() const { return m_windowServer; }
 
     inline string commandLineArgument(size_t i) const;
     inline size_t commandLineArgumentCount() const;
 
 protected:
-    ApplicationContext(Platform platform, WindowManager *windowManager);
+    ApplicationContext(Platform platform, WindowServer *windowServer);
     void initialize(const DefaultParameters &params);
     void addCommandLineArgument(const string &s);
     virtual void internalFree();
 
 private:
     DynamicArray<string> m_commandLineArguments;
-    WindowManager *m_windowManager;
+    WindowServer *m_windowServer;
 };
 
 size_t ApplicationContext::commandLineArgumentCount() const {

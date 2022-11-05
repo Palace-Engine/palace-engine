@@ -4,8 +4,10 @@ palace::ApplicationContext::ApplicationContext()
     : ApplicationContext(Platform::Unknown, nullptr) {}
 
 palace::ApplicationContext::ApplicationContext(Platform platform,
-                                               WindowManager *windowManager)
-    : PlatformObject(platform), m_windowManager(windowManager) {}
+                                               WindowServer *windowServer)
+    : PlatformObject(platform), m_windowServer(windowServer) {
+    addObject(windowServer);
+}
 
 palace::ApplicationContext::~ApplicationContext() {}
 
@@ -20,5 +22,5 @@ void palace::ApplicationContext::addCommandLineArgument(const string &s) {
 }
 
 void palace::ApplicationContext::internalFree() {
-    if (m_windowManager != nullptr) { m_windowManager->free(); }
+    if (m_windowServer != nullptr) { m_windowServer->free(); }
 }

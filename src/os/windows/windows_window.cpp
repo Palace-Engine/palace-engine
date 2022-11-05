@@ -1,9 +1,9 @@
 #include "../../../include/os/windows/windows_window.hpp"
 
-#include "../../../include/os/windows/windows_window_manager.hpp"
+#include "../../../include/os/windows/windows_window_server.hpp"
 
 palace::WindowsWindow::WindowsWindow() : Window(Platform::Windows) {
-    m_manager = nullptr;
+    m_server = nullptr;
 
 #if PALACE_PLATFORM_WINDOWS
     m_handle = NULL;
@@ -13,7 +13,7 @@ palace::WindowsWindow::WindowsWindow() : Window(Platform::Windows) {
 palace::WindowsWindow::~WindowsWindow() {}
 
 size_t palace::WindowsWindow::findId() const {
-    return m_manager->findIndex(this);
+    return m_server->findIndex(this);
 }
 
 void palace::WindowsWindow::initialize(const Parameters &parameters) {
@@ -77,8 +77,8 @@ LRESULT WINAPI palace::WindowsWindow::WinProc(HWND hWnd, UINT msg,
     switch (msg) {
         case WM_CREATE: {
             WindowsWindow *window = reinterpret_cast<WindowsWindow *>(lParam);
-            return window->m_manager->internalWinProc(window, msg, wParam,
-                                                      lParam);
+            return window->m_server->internalWinProc(window, msg, wParam,
+                                                     lParam);
         }
     }
 

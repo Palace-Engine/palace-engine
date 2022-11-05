@@ -8,10 +8,10 @@
 namespace palace {
 
 class WindowEventHandler;
-class WindowManager;
+class WindowServer;
 
 class Window : public PlatformObject {
-    friend WindowManager;
+    friend WindowServer;
 
 public:
     enum class State { Visible, Hidden, Maximized, Minimized, Closed, Unknown };

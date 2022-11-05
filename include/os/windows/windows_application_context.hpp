@@ -5,7 +5,7 @@
 
 #include "../../platform/platform_detection.hpp"
 #include "../../platform/platform_includes.hpp"
-#include "windows_window_manager.hpp"
+#include "windows_window_server.hpp"
 
 namespace palace {
 
@@ -44,7 +44,7 @@ private:
     int m_initialDisplayCommand;
 #endif
 
-    WindowsWindowManager m_windowManager;
+    WindowsWindowServer m_windowServer;
 };
 
 }// namespace palace

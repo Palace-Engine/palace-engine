@@ -1,7 +1,7 @@
 #ifndef ATG_PALACE_ENGINE_WINDOWS_WINDOW_MANAGER_HPP
 #define ATG_PALACE_ENGINE_WINDOWS_WINDOW_MANAGER_HPP
 
-#include "../window_manager.hpp"
+#include "../window_server.hpp"
 
 #include "../../platform/platform_detection.hpp"
 #include "../../platform/platform_includes.hpp"
@@ -11,12 +11,12 @@
 namespace palace {
 
 class WindowsApplicationContext;
-class WindowsWindowManager : public WindowManager {
+class WindowsWindowServer : public WindowServer {
     friend WindowsApplicationContext;
 
 public:
-    WindowsWindowManager();
-    virtual ~WindowsWindowManager();
+    WindowsWindowServer();
+    virtual ~WindowsWindowServer();
 
     virtual Window *spawnWindow(const Window::Parameters &params) override;
     virtual void updateDisplayDevices() override;
@@ -34,7 +34,7 @@ private:
 #if PALACE_PLATFORM_WINDOWS
     bool registerWindowsClass(ATOM *windowClass);
     struct MonitorCallBackContext {
-        WindowsWindowManager *windowManager;
+        WindowsWindowServer *windowServer;
     };
 
     static BOOL CALLBACK monitorCallback(HMONITOR hMonitor, HDC hdcMonitor,
@@ -48,8 +48,8 @@ private:
 
 private:
     WindowsApplicationContext *m_context;
-    ObjectList<Window, WindowsWindow> m_windows;
-    ObjectList<DisplayDevice, WindowsDisplayDevice> m_displayDevices;
+    ObjectContainer<Window, WindowsWindow> m_windows;
+    ObjectContainer<DisplayDevice, WindowsDisplayDevice> m_displayDevices;
 };
 
 }// namespace rebar

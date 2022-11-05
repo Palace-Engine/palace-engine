@@ -1,12 +1,10 @@
-#include "../../../include/os/windows/windows_window_manager.hpp"
+#include "../../../include/os/windows/windows_window_server.hpp"
 
 #include "../../../include/os/windows/windows_application_context.hpp"
 #include "../../../include/os/windows/windows_display_device.hpp"
 
-palace::WindowsWindowManager::WindowsWindowManager()
-    : WindowManager(Platform::Windows, m_windows.toBase(),
-                    m_displayDevices.toBase()),
-      m_windows(this), m_displayDevices(this) {
+palace::WindowsWindowServer::WindowsWindowServer()
+    : WindowServer(Platform::Windows, &m_windows, &m_displayDevices) {
     m_context = nullptr;
 
 #if PALACE_PLATFORM_WINDOWS
@@ -14,11 +12,11 @@ palace::WindowsWindowManager::WindowsWindowManager()
 #endif
 }
 
-palace::WindowsWindowManager::~WindowsWindowManager() {}
+palace::WindowsWindowServer::~WindowsWindowServer() {}
 
 #if PALACE_PLATFORM_WINDOWS
 palace::Window *
-palace::WindowsWindowManager::spawnWindow(const Window::Parameters &params) {
+palace::WindowsWindowServer::spawnWindow(const Window::Parameters &params) {
     WindowsWindow *parent = (params.parent != nullptr)
                                     ? m_windows[params.parent->findId()]
                                     : nullptr;
@@ -28,8 +26,9 @@ palace::WindowsWindowManager::spawnWindow(const Window::Parameters &params) {
     if (!registerWindowsClass(&windowClass)) { return nullptr; }
 
     WindowsWindow *newWindow = m_windows.create();
+    addObject(newWindow);
     newWindow->initialize(params);
-    newWindow->m_manager = this;
+    newWindow->m_server = this;
     newWindow->m_handle = CreateWindow(
             MAKEINTATOM(windowClass), params.title.c_str(), style,
             params.position.x(), params.position.y(), params.size.w(),
@@ -48,13 +47,13 @@ palace::WindowsWindowManager::spawnWindow(const Window::Parameters &params) {
     return static_cast<palace::Window *>(newWindow);
 }
 
-void palace::WindowsWindowManager::updateDisplayDevices() {
-    WindowManager::updateDisplayDevices();
-    EnumDisplayMonitors(NULL, NULL, &WindowsWindowManager::monitorCallback,
+void palace::WindowsWindowServer::updateDisplayDevices() {
+    WindowServer::updateDisplayDevices();
+    EnumDisplayMonitors(NULL, NULL, &WindowsWindowServer::monitorCallback,
                         reinterpret_cast<LPARAM>(this));
 }
 
-void palace::WindowsWindowManager::processMessages() {
+void palace::WindowsWindowServer::processMessages() {
     MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
         TranslateMessage(&msg);
@@ -63,16 +62,11 @@ void palace::WindowsWindowManager::processMessages() {
 }
 
 size_t
-palace::WindowsWindowManager::findIndex(const WindowsWindow *window) const {
-    const size_t n = m_displayDevices.size();
-    for (size_t i = 0; i < n; ++i) {
-        if (m_windows[i] == window) { return i; }
-    }
-
-    return 0;
+palace::WindowsWindowServer::findIndex(const WindowsWindow *window) const {
+    return m_windows.findFirst(window);
 }
 
-bool palace::WindowsWindowManager::registerWindowsClass(ATOM *windowClass) {
+bool palace::WindowsWindowServer::registerWindowsClass(ATOM *windowClass) {
     const std::string windowClassName =
             "PalaceWindowClass" + std::to_string(m_windowClasses++);
 
@@ -90,7 +84,7 @@ bool palace::WindowsWindowManager::registerWindowsClass(ATOM *windowClass) {
     wc.lpszClassName = windowClassName.c_str();
     wc.hIconSm = NULL;
 
-    ATOM newWindowClass = RegisterClassEx(&wc);
+    const ATOM newWindowClass = RegisterClassEx(&wc);
     if (newWindowClass == 0) {
         return false;
     } else {
@@ -99,20 +93,22 @@ bool palace::WindowsWindowManager::registerWindowsClass(ATOM *windowClass) {
     }
 }
 
-BOOL CALLBACK palace::WindowsWindowManager::monitorCallback(
-        HMONITOR hMonitor, HDC /* hdcMonitor */, LPRECT lprcMonitor,
-        LPARAM dwData) {
+BOOL CALLBACK palace::WindowsWindowServer::monitorCallback(HMONITOR hMonitor,
+                                                           HDC /* hdcMonitor */,
+                                                           LPRECT lprcMonitor,
+                                                           LPARAM dwData) {
     MONITORINFOEX info;
     info.cbSize = sizeof(MONITORINFOEX);
     GetMonitorInfo(hMonitor, &info);
 
-    WindowsWindowManager *windowManager =
-            reinterpret_cast<palace::WindowsWindowManager *>(dwData);
+    WindowsWindowServer *windowServer =
+            reinterpret_cast<palace::WindowsWindowServer *>(dwData);
     WindowsDisplayDevice *monitor =
-            windowManager->findDisplayDevice(info.szDevice);
+            windowServer->findDisplayDevice(info.szDevice);
 
     if (monitor == nullptr) {
-        monitor = windowManager->m_displayDevices.create();
+        monitor = windowServer->m_displayDevices.create();
+        windowServer->addObject(monitor);
         monitor->setDeviceName(info.szDevice);
     }
 
@@ -130,9 +126,9 @@ BOOL CALLBACK palace::WindowsWindowManager::monitorCallback(
     return TRUE;
 }
 
-LRESULT palace::WindowsWindowManager::internalWinProc(WindowsWindow *window,
-                                                      UINT msg, WPARAM wParam,
-                                                      LPARAM lParam) {
+LRESULT palace::WindowsWindowServer::internalWinProc(WindowsWindow *window,
+                                                     UINT msg, WPARAM wParam,
+                                                     LPARAM lParam) {
     return DefWindowProc(window->m_handle, msg, wParam, lParam);
 }
 #else
@@ -145,8 +141,8 @@ void palace::WindowsWindowManager::updateDisplayDevices() {}
 void palace::WindowsWindowManager::processMessages() {}
 #endif
 
-palace::WindowsDisplayDevice *palace::WindowsWindowManager::findDisplayDevice(
-        const string &deviceName) const {
+palace::WindowsDisplayDevice *
+palace::WindowsWindowServer::findDisplayDevice(const string &deviceName) const {
     const size_t n = m_displayDevices.size();
     for (size_t i = 0; i < n; ++i) {
         WindowsDisplayDevice *displayDevice = m_displayDevices[i];

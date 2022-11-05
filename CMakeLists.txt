@@ -72,16 +72,17 @@ add_library("palace-engine" STATIC
         src/os/application_context.cpp
         src/os/display_device.cpp
         src/os/window.cpp
-        src/os/window_manager.cpp
+        src/os/window_server.cpp
         src/os/windows/windows_application_context.cpp
         src/os/windows/windows_display_device.cpp
         src/os/windows/windows_window.cpp
-        src/os/windows/windows_window_manager.cpp
+        src/os/windows/windows_window_server.cpp
         src/platform/platform_object.cpp
         src/platform/platform.cpp
 
         # Header files
         include/core/dynamic_array.hpp
+        include/core/engine_object.hpp
         include/core/object.hpp
         include/core/object_container.hpp
         include/debug/assert.hpp
@@ -95,11 +96,11 @@ add_library("palace-engine" STATIC
         include/os/application_context.hpp
         include/os/display_device.hpp
         include/os/window.hpp
-        include/os/window_manager.hpp
+        include/os/window_server.hpp
         include/os/windows/windows_application_context.hpp
         include/os/windows/windows_display_device.hpp
         include/os/windows/windows_window.hpp
-        include/os/windows/windows_window_manager.hpp
+        include/os/windows/windows_window_server.hpp
         include/platform/disable_warnings.hpp
         include/platform/enable_warnings.hpp
         include/platform/entry_point.hpp

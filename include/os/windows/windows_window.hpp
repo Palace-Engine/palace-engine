@@ -7,10 +7,10 @@
 
 namespace palace {
 
-class WindowsWindowManager;
+class WindowsWindowServer;
 
 class WindowsWindow : public Window {
-    friend WindowsWindowManager;
+    friend WindowsWindowServer;
 
 public:
     WindowsWindow();
@@ -39,7 +39,7 @@ private:
     void setStylePopup();
 
 private:
-    WindowsWindowManager *m_manager;
+    WindowsWindowServer *m_server;
 
 #if PALACE_PLATFORM_WINDOWS
     HWND m_handle;

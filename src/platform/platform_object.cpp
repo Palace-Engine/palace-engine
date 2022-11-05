@@ -2,7 +2,6 @@
 
 palace::PlatformObject::~PlatformObject() {}
 
-palace::PlatformObject::PlatformObject(Platform platform)
-{
+palace::PlatformObject::PlatformObject(Platform platform) {
     m_platform = platform;
 }

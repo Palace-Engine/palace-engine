@@ -18,7 +18,7 @@ std::string utf8Encode(const std::wstring &wstr) {
 #endif
 
 palace::WindowsApplicationContext::WindowsApplicationContext()
-    : ApplicationContext(Platform::Windows, &m_windowManager) {
+    : ApplicationContext(Platform::Windows, &m_windowServer) {
     palace_assert(PALACE_PLATFORM_WINDOWS);
 
 #if PALACE_PLATFORM_WINDOWS
@@ -48,7 +48,7 @@ void palace::WindowsApplicationContext::initialize(const Parameters &params) {
         LocalFree(commandLineArguments);
     }
 
-    m_windowManager.setContext(this);
+    m_windowServer.setContext(this);
 #endif
 }
 

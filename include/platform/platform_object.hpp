@@ -8,8 +8,7 @@
 
 namespace palace {
 
-class PlatformObject : public EngineObject
-{
+class PlatformObject : public EngineObject {
 public:
     virtual ~PlatformObject();
 

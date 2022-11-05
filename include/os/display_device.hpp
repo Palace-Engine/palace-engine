@@ -8,8 +8,9 @@
 
 namespace palace {
 
+class WindowServer;
 class DisplayDevice : public PlatformObject {
-    friend class WindowManager;
+    friend WindowServer;
 
 public:
     struct Parameters {
