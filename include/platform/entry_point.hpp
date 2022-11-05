@@ -2,6 +2,7 @@
 #define ATG_PALACE_ENGINE_ENTRY_POINT_HPP
 
 #include "../os/application_context.hpp"
+#include "../logging/targets/file_log_target.hpp"
 #include "platform_detection.hpp"
 #include "platform_includes.hpp"
 
@@ -28,12 +29,21 @@ int APIENTRY WINAPI WinMain(_In_ HINSTANCE hInstance,
                             _In_opt_ HINSTANCE hPrevInstance,
                             _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
+    palace::EngineContext context;
+    palace::FileLogTarget *logTarget = context.logger().addTarget<palace::FileLogTarget>();
+    logTarget->newFile("application_log");
+
     palace::WindowsApplicationContext::Parameters parameters = {
             hInstance, hPrevInstance, lpCmdLine, nCmdShow};
-    palace::WindowsApplicationContext context;
-    context.initialize(parameters);
+    palace::WindowsApplicationContext applicationContext;
+    applicationContext.EngineObject::setContext(&context);
+    applicationContext.initialize(parameters);
 
-    return palaceMain(&context);
+    const int returnValue = palaceMain(&applicationContext);
+    applicationContext.free();
+
+    context.logger().close();
+    return returnValue;
 }
 #endif// PALACE_PLATFORM_WINDOWS_CONSOLE_MODE
 #else

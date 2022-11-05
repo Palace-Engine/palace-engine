@@ -37,6 +37,8 @@ public:
         return newTarget;
     }
 
+    void close();
+
     PALACE_LOGGER_LOG_PROTOTYPE(fatal, LogLevel::Fatal);
     PALACE_LOGGER_LOG_PROTOTYPE(error, LogLevel::Error);
     PALACE_LOGGER_LOG_PROTOTYPE(warn, LogLevel::Warning);

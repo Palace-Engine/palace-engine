@@ -3,17 +3,27 @@
 #include <ctime>
 #include <sstream>
 
-palace::LogTarget::LogTarget() { m_timestampBuffer = new char[256]; }
+palace::LogTarget::LogTarget() {
+    m_maximumLogLevel = LogLevel::Info;
+    m_timestampBuffer = new char[256];
+}
 
 palace::LogTarget::~LogTarget() { delete[] m_timestampBuffer; }
 
 void palace::LogTarget::log(LogLevel level, std::string_view message) {
+    if (static_cast<unsigned int>(level) >
+        static_cast<unsigned int>(m_maximumLogLevel)) {
+        return;
+    }
+
     std::stringstream ss;
     ss << std::string(timestamp()) << " | "
        << std::string(logLevelToString(level)) << " | " << std::string(message)
        << "\n";
     log(ss.str());
 }
+
+void palace::LogTarget::close() { onClose(); }
 
 std::string_view palace::LogTarget::logLevelToString(LogLevel level) {
     switch (level) {

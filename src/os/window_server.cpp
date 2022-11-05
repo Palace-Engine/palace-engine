@@ -12,11 +12,13 @@ palace::WindowServer::WindowServer(Platform platform, WindowContainer *windows,
 palace::WindowServer::~WindowServer() {}
 
 void palace::WindowServer::free() {
+    PALACE_LOG_INFO("Freeing window server");
+
     freeAllWindows();
 
     const size_t displayDeviceCount = m_displayDevices->size();
     for (size_t i = 0; i < displayDeviceCount; ++i) {
-        DisplayDevice *device = m_displayDevices->get(i);
+        DisplayDevice *device = m_displayDevices->get(0);
         freeDisplayDevice(device);
     }
 }

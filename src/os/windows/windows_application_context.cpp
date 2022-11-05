@@ -31,6 +31,8 @@ palace::WindowsApplicationContext::WindowsApplicationContext()
 palace::WindowsApplicationContext::~WindowsApplicationContext() {}
 
 void palace::WindowsApplicationContext::initialize(const Parameters &params) {
+    addObject(&m_windowServer);
+
 #if PALACE_PLATFORM_WINDOWS
     m_currentInstance = params.hInstance;
     m_previousInstance = params.hPrevInstance;

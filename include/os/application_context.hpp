@@ -20,6 +20,8 @@ public:
     ApplicationContext();
     virtual ~ApplicationContext();
 
+    void free();
+
     WindowServer *windowServer() const { return m_windowServer; }
 
     inline string commandLineArgument(size_t i) const;

@@ -65,10 +65,13 @@ set_property(TARGET atg-math-test PROPERTY FOLDER "math")
 add_library("palace-engine" STATIC
         # Source files
         src/core/dynamic_array.cpp
+        src/core/engine_context.cpp
+        src/core/engine_object.cpp
         src/core/object_container.cpp
         src/memory/default_allocator.cpp
         src/logging/log_target.cpp
         src/logging/logger.cpp
+        src/logging/targets/file_log_target.cpp
         src/os/application_context.cpp
         src/os/display_device.cpp
         src/os/window.cpp
@@ -82,6 +85,7 @@ add_library("palace-engine" STATIC
 
         # Header files
         include/core/dynamic_array.hpp
+        include/core/engine_context.hpp
         include/core/engine_object.hpp
         include/core/object.hpp
         include/core/object_container.hpp
@@ -89,6 +93,7 @@ add_library("palace-engine" STATIC
         include/logging/log_level.hpp
         include/logging/log_target.hpp
         include/logging/logger.hpp
+        include/logging/targets/file_log_target.hpp
         include/math/math.hpp
         include/memory/alloc.hpp
         include/memory/default_allocator.hpp
@@ -116,6 +121,7 @@ create_filter("core" "core")
 create_filter("debug" "debug")
 create_filter("info" "info")
 create_filter("logging" "logging")
+create_filter("logging\\targets" "logging/targets")
 create_filter("math" "math")
 create_filter("memory" "memory")
 create_filter("os" "os")

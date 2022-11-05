@@ -5,6 +5,50 @@
 
 namespace palace {
 
+#define PALACE_ENGINE_LOG_LEVEL PALACE_ENGINE_LOG_LEVEL_DEBUG
+#if defined(PALACE_ENGINE_LOG_LEVEL) and                                       \
+        PALACE_ENGINE_LOG_LEVEL >= PALACE_ENGINE_LOG_LEVEL_FATAL
+#define PALACE_LOG_FATAL(format, ...)                                          \
+    logger().fatal(format __VA_OPT__(, ) __VA_ARGS__
+#else
+#define PALACE_LOG_FATAL(format, ...)
+#endif
+#if defined(PALACE_ENGINE_LOG_LEVEL) and                                       \
+        PALACE_ENGINE_LOG_LEVEL >= PALACE_ENGINE_LOG_LEVEL_ERROR
+#define PALACE_LOG_ERROR(format, ...)                                          \
+    logger().error(format __VA_OPT__(, ) __VA_ARGS__
+#else
+#define PALACE_LOG_ERROR(format, ...)
+#endif
+#if defined(PALACE_ENGINE_LOG_LEVEL) and                                       \
+        PALACE_ENGINE_LOG_LEVEL >= PALACE_ENGINE_LOG_LEVEL_WARNING
+#define PALACE_LOG_WARNING(format, ...)                                        \
+    logger().warn(format __VA_OPT__(, ) __VA_ARGS__
+#else
+#define PALACE_LOG_WARNING(format, ...)
+#endif
+#if defined(PALACE_ENGINE_LOG_LEVEL) and                                       \
+        PALACE_ENGINE_LOG_LEVEL >= PALACE_ENGINE_LOG_LEVEL_INFO
+#define PALACE_LOG_INFO(format, ...)                                           \
+    logger().info(format __VA_OPT__(, ) __VA_ARGS__)
+#else
+#define PALACE_LOG_INFO(format, ...)
+#endif
+#if defined(PALACE_ENGINE_LOG_LEVEL) and                                       \
+        PALACE_ENGINE_LOG_LEVEL >= PALACE_ENGINE_LOG_LEVEL_DEBUG
+#define PALACE_LOG_DEBUG(format, ...)                                          \
+    logger().debug(format __VA_OPT__(, ) __VA_ARGS__)
+#else
+#define PALACE_LOG_DEBUG(level, format, ...)
+#endif
+#if defined(PALACE_ENGINE_LOG_LEVEL) and                                       \
+        PALACE_ENGINE_LOG_LEVEL >= PALACE_ENGINE_LOG_LEVEL_TRACE
+#define PALACE_LOG_TRACE(format, ...)                                          \
+    logger().trace(format __VA_OPT__(, ) __VA_ARGS__)
+#else
+#define PALACE_LOG_TRACE(format, ...)
+#endif
+
 class EngineObject {
 public:
     EngineObject();

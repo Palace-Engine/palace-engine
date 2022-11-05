@@ -5,11 +5,11 @@ palace::ApplicationContext::ApplicationContext()
 
 palace::ApplicationContext::ApplicationContext(Platform platform,
                                                WindowServer *windowServer)
-    : PlatformObject(platform), m_windowServer(windowServer) {
-    addObject(windowServer);
-}
+    : PlatformObject(platform), m_windowServer(windowServer) {}
 
 palace::ApplicationContext::~ApplicationContext() {}
+
+void palace::ApplicationContext::free() { internalFree(); }
 
 void palace::ApplicationContext::initialize(const DefaultParameters &params) {
     for (int i = 0; i < params.argc; ++i) {
