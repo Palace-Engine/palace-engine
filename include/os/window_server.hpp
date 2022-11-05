@@ -10,6 +10,10 @@
 namespace palace {
 
 class WindowServer : public PlatformObject {
+    PALACE_OBJECT_DATA(WindowServer, PlatformObject,
+                       "Base type for window servers which create and manage "
+                       "native windows and query the OS for display devices.");
+
     using WindowContainer = BaseObjectContainer<Window>;
     using DisplayDeviceContainer = BaseObjectContainer<DisplayDevice>;
 
@@ -22,7 +26,7 @@ public:
 
     virtual void free();
 
-    virtual Window *spawnWindow(const Window::Parameters &params = {});
+    virtual Window *spawnWindow(const Window::Parameters &params = {}) = 0;
     void freeWindow(Window *&window);
     inline const WindowContainer &windows() const { return *m_windows; }
     inline const DisplayDeviceContainer &displayDevices() const {

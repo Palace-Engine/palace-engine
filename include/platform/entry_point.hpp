@@ -1,8 +1,8 @@
 #ifndef ATG_PALACE_ENGINE_ENTRY_POINT_HPP
 #define ATG_PALACE_ENGINE_ENTRY_POINT_HPP
 
-#include "../os/application_context.hpp"
 #include "../logging/targets/file_log_target.hpp"
+#include "../os/windows/windows_engine_context.hpp"
 #include "platform_detection.hpp"
 #include "platform_includes.hpp"
 
@@ -10,8 +10,7 @@ int palaceMain(palace::ApplicationContext *context = nullptr);
 
 #if PALACE_PLATFORM_WINDOWS
 #if PALACE_PLATFORM_WINDOWS_CONSOLE_MODE
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     palace::ApplicationContext::DefaultParameters defaultSystemParameters = {
             argc, &argv};
     palace::ApplicationContext::initialize<palace::ApplicationContext>(
@@ -27,22 +26,16 @@ int main(int argc, char *argv[])
 
 int APIENTRY WINAPI WinMain(_In_ HINSTANCE hInstance,
                             _In_opt_ HINSTANCE hPrevInstance,
-                            _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
-{
-    palace::EngineContext context;
-    palace::FileLogTarget *logTarget = context.logger().addTarget<palace::FileLogTarget>();
+                            _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
+    palace::WindowsEngineContext context;
+    palace::FileLogTarget *logTarget =
+            context.logger().addTarget<palace::FileLogTarget>();
     logTarget->newFile("application_log");
 
-    palace::WindowsApplicationContext::Parameters parameters = {
-            hInstance, hPrevInstance, lpCmdLine, nCmdShow};
-    palace::WindowsApplicationContext applicationContext;
-    applicationContext.EngineObject::setContext(&context);
-    applicationContext.initialize(parameters);
+    context.initialize(hInstance, hPrevInstance, lpCmdLine, nCmdShow);
+    const int returnValue = palaceMain(context.applicationContext());
+    context.free();
 
-    const int returnValue = palaceMain(&applicationContext);
-    applicationContext.free();
-
-    context.logger().close();
     return returnValue;
 }
 #endif// PALACE_PLATFORM_WINDOWS_CONSOLE_MODE

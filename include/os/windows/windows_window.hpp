@@ -10,6 +10,9 @@ namespace palace {
 class WindowsWindowServer;
 
 class WindowsWindow : public Window {
+    PALACE_OBJECT_DATA(WindowsWindow, Window,
+                       "Display device type for Windows OSs.");
+
     friend WindowsWindowServer;
 
 public:
@@ -33,6 +36,8 @@ private:
                                   LPARAM lParam);
     LRESULT internalWinProc(UINT msg, WPARAM wParam, LPARAM lParam);
     void updatePositionAndSize();
+
+    static constexpr const char *messageTypeName(UINT msg);
 #endif
 
     void setStyleWindowed();

@@ -10,6 +10,9 @@ namespace palace {
 
 class WindowServer;
 class DisplayDevice : public PlatformObject {
+    PALACE_OBJECT_DATA(DisplayDevice, PlatformObject,
+                       "Base type for display devices like monitors.");
+
     friend WindowServer;
 
 public:

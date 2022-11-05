@@ -16,11 +16,11 @@ public:
     void setMaximumLogLevel(LogLevel level) { m_maximumLogLevel = level; }
     LogLevel maximumLogLevel() const { return m_maximumLogLevel; }
 
-    void log(LogLevel level, std::string_view message);
+    void log(LogLevel level, std::string_view message, bool critical);
     void close();
 
 private:
-    virtual void log(std::string_view message) = 0;
+    virtual void log(std::string_view message, bool critical) = 0;
     virtual void onClose() {}
 
     static std::string_view logLevelToString(LogLevel level);

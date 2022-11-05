@@ -5,7 +5,10 @@
 palace::HeapAllocator *palace::Logger::s_defaultAllocator =
         new palace::HeapAllocator;
 
-palace::Logger::Logger() { m_allocator = s_defaultAllocator; }
+palace::Logger::Logger() {
+    m_allocator = s_defaultAllocator;
+    m_maximumLogLevel = LogLevel::Trace;
+}
 
 palace::Logger::~Logger() {}
 

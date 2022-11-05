@@ -33,7 +33,11 @@ bool palace::FileLogTarget::resume(std::string_view filename) {
     return m_file.is_open();
 }
 
-void palace::FileLogTarget::log(std::string_view message) { m_file << message; }
+void palace::FileLogTarget::log(std::string_view message, bool critical) {
+    m_file << message;
+
+    if (critical) { m_file.flush(); }
+}
 
 void palace::FileLogTarget::onClose() { m_file.close(); }
 

@@ -24,8 +24,14 @@ void palace::WindowsWindow::setState(State state) {
     Window::setState(state);
 
 #if PALACE_PLATFORM_WINDOWS
-    DestroyWindow(m_handle);
-    m_handle = NULL;
+    if (state == State::Closed) {
+        PALACE_LOG_INFO("State set to closed.");
+        if (DestroyWindow(m_handle) == FALSE) {
+            PALACE_LOG_ERROR("WIN32::DestroyWindow() failed.");
+        }
+
+        m_handle = NULL;
+    }
 #endif
 }
 
@@ -43,16 +49,25 @@ void palace::WindowsWindow::setStyle(Style style) {
 }
 
 void palace::WindowsWindow::setPosition(const math::ivec2 &position) {
+    PALACE_LOG_INFO("Setting window position: [%d, %d]", position.x(),
+                    position.y());
+
 #if PALACE_PLATFORM_WINDOWS
-    SetWindowPos(m_handle, NULL, position.x(), position.y(), 0, 0,
-                 SWP_NOSIZE | SWP_NOZORDER);
+    if (SetWindowPos(m_handle, NULL, position.x(), position.y(), 0, 0,
+                     SWP_NOSIZE | SWP_NOZORDER) == FALSE) {
+        PALACE_LOG_ERROR("WIN32::SetWindowPos() failed.");
+    }
 #endif
 }
 
 void palace::WindowsWindow::setSize(const math::ivec2 &size) {
+    PALACE_LOG_INFO("Setting window size: [%d, %d]", size.w(), size.h());
+
 #if PALACE_PLATFORM_WINDOWS
-    SetWindowPos(m_handle, NULL, 0, 0, size.w(), size.h(),
-                 SWP_NOMOVE | SWP_NOZORDER);
+    if (SetWindowPos(m_handle, NULL, 0, 0, size.w(), size.h(),
+                     SWP_NOMOVE | SWP_NOZORDER) == FALSE) {
+        PALACE_LOG_ERROR("WIN32::SetWindowPos() failed.");
+    }
 #endif
 }
 
@@ -93,9 +108,17 @@ LRESULT WINAPI palace::WindowsWindow::WinProc(HWND hWnd, UINT msg,
 
 LRESULT palace::WindowsWindow::internalWinProc(UINT msg, WPARAM wParam,
                                                LPARAM lParam) {
+    const char *messageName = messageTypeName(msg);
+    if (messageName == nullptr) {
+        PALACE_LOG_TRACE_OPT("[Ignored] WIN32 message: 0x%X", msg);
+    } else {
+        PALACE_LOG_DEBUG("WIN32 message: %s (0x%X)", messageName, msg);
+    }
+
     switch (msg) {
         case WM_DESTROY:
-            PostQuitMessage(0);
+            return 0;
+        case WM_QUIT:
             return 0;
         case WM_PAINT: {
             PAINTSTRUCT ps;
@@ -140,11 +163,38 @@ void palace::WindowsWindow::updatePositionAndSize() {
         updateContentSizeCache(
                 {rect.right - rect.left, rect.bottom - rect.top});
         updateContentPositionCache({rect.left, rect.top});
+    } else {
+        PALACE_LOG_ERROR("WIN32::GetClientRect() failed.");
     }
 
     if (GetWindowRect(m_handle, &rect)) {
         updateSizeCache({rect.right - rect.left, rect.bottom - rect.top});
         updatePositionCache({rect.left, rect.top});
+    } else {
+        PALACE_LOG_ERROR("WIN32::GetWindowRect() failed.");
+    }
+}
+
+#define MESSAGE_NAME(name)                                                     \
+    case name:                                                                 \
+        return #name;
+constexpr const char *palace::WindowsWindow::messageTypeName(UINT msg) {
+    switch (msg) {
+        MESSAGE_NAME(WM_CREATE);
+        MESSAGE_NAME(WM_QUIT);
+        MESSAGE_NAME(WM_DESTROY);
+        MESSAGE_NAME(WM_PAINT);
+        MESSAGE_NAME(WM_CLOSE);
+        MESSAGE_NAME(WM_SIZE);
+        MESSAGE_NAME(WM_ENTERSIZEMOVE);
+        MESSAGE_NAME(WM_EXITSIZEMOVE);
+        MESSAGE_NAME(WM_MOVE);
+        MESSAGE_NAME(WM_SETFOCUS);
+        MESSAGE_NAME(WM_KILLFOCUS);
+        MESSAGE_NAME(WM_KEYDOWN);
+        MESSAGE_NAME(WM_INPUT);
+        default:
+            return nullptr;
     }
 }
 #endif

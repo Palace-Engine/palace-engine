@@ -12,7 +12,7 @@ palace::WindowServer::WindowServer(Platform platform, WindowContainer *windows,
 palace::WindowServer::~WindowServer() {}
 
 void palace::WindowServer::free() {
-    PALACE_LOG_INFO("Freeing window server");
+    PALACE_LOG_INFO_OPT("Freeing window server");
 
     freeAllWindows();
 
@@ -21,11 +21,6 @@ void palace::WindowServer::free() {
         DisplayDevice *device = m_displayDevices->get(0);
         freeDisplayDevice(device);
     }
-}
-
-palace::Window *
-palace::WindowServer::spawnWindow(const Window::Parameters & /* params */) {
-    return nullptr;
 }
 
 void palace::WindowServer::freeWindow(Window *&window) {

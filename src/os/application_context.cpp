@@ -18,6 +18,7 @@ void palace::ApplicationContext::initialize(const DefaultParameters &params) {
 }
 
 void palace::ApplicationContext::addCommandLineArgument(const string &s) {
+    PALACE_LOG_INFO("Adding command line argument: %s", s.c_str());
     m_commandLineArguments.append(s);
 }
 

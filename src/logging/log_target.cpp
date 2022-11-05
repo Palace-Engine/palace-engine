@@ -4,23 +4,23 @@
 #include <sstream>
 
 palace::LogTarget::LogTarget() {
-    m_maximumLogLevel = LogLevel::Info;
+    m_maximumLogLevel = LogLevel::Trace;
     m_timestampBuffer = new char[256];
 }
 
 palace::LogTarget::~LogTarget() { delete[] m_timestampBuffer; }
 
-void palace::LogTarget::log(LogLevel level, std::string_view message) {
+void palace::LogTarget::log(LogLevel level, std::string_view message,
+                            bool critical) {
     if (static_cast<unsigned int>(level) >
         static_cast<unsigned int>(m_maximumLogLevel)) {
         return;
     }
 
     std::stringstream ss;
-    ss << std::string(timestamp()) << " | "
-       << std::string(logLevelToString(level)) << " | " << std::string(message)
+    ss << timestamp() << " | " << logLevelToString(level) << " | " << message
        << "\n";
-    log(ss.str());
+    log(ss.str(), critical);
 }
 
 void palace::LogTarget::close() { onClose(); }
@@ -28,15 +28,15 @@ void palace::LogTarget::close() { onClose(); }
 std::string_view palace::LogTarget::logLevelToString(LogLevel level) {
     switch (level) {
         case LogLevel::Debug:
-            return "DEBUG";
+            return "DEBUG  ";
         case LogLevel::Error:
-            return "ERROR";
+            return "ERROR  ";
         case LogLevel::Fatal:
-            return "FATAL";
+            return "FATAL  ";
         case LogLevel::Info:
-            return "INFO";
+            return "INFO   ";
         case LogLevel::Trace:
-            return "TRACE";
+            return "TRACE  ";
         case LogLevel::Warning:
             return "WARNING";
         default:

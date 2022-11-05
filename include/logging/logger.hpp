@@ -49,6 +49,14 @@ public:
 private:
     template<typename... Args>
     void log(LogLevel level, std::string_view format, Args... args) {
+        if (static_cast<unsigned int>(level) >
+                    static_cast<unsigned int>(m_maximumLogLevel) ||
+            m_targets.size() == 0) {
+            return;
+        }
+
+        const bool critical = static_cast<unsigned int>(level) <=
+                              static_cast<unsigned int>(LogLevel::Error);
         const size_t capacity = m_buffer.capacity();
         const size_t size =
                 snprintf(m_buffer.data(), capacity + 1, format.data(), args...);
@@ -59,7 +67,7 @@ private:
 
         const size_t n = m_targets.size();
         for (size_t i = 0; i < n; ++i) {
-            m_targets[i]->log(level, m_buffer);
+            m_targets[i]->log(level, m_buffer.c_str(), critical);
         }
     }
 
@@ -67,6 +75,7 @@ private:
     DynamicArray<LogTarget *> m_targets;
     HeapAllocator *m_allocator;
     std::string m_buffer;
+    LogLevel m_maximumLogLevel;
 };
 
 }// namespace palace

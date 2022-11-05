@@ -5,15 +5,27 @@
 
 namespace palace {
 
+using ObjectId = unsigned long long;
+static constexpr ObjectId InvalidId = -1;
+
+class ApplicationContext;
 class EngineContext {
 public:
-    EngineContext();
-    ~EngineContext();
+    EngineContext(ApplicationContext *applicationContext);
+    virtual ~EngineContext();
 
     inline Logger &logger() { return m_logger; }
+    ApplicationContext *applicationContext() { return m_applicationContext; }
+
+    ObjectId newId() { return m_currentId++; }
+
+protected:
+    void registerApplicationContext();
 
 private:
+    ApplicationContext *m_applicationContext;
     Logger m_logger;
+    ObjectId m_currentId;
 };
 
 }// namespace palace

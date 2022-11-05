@@ -33,6 +33,8 @@ palace::WindowsApplicationContext::~WindowsApplicationContext() {}
 void palace::WindowsApplicationContext::initialize(const Parameters &params) {
     addObject(&m_windowServer);
 
+    PALACE_LOG_INFO("Created window server with id=@%u", m_windowServer.id());
+
 #if PALACE_PLATFORM_WINDOWS
     m_currentInstance = params.hInstance;
     m_previousInstance = params.hPrevInstance;
@@ -41,6 +43,8 @@ void palace::WindowsApplicationContext::initialize(const Parameters &params) {
     int argumentCount;
     LPWSTR *commandLineArguments =
             CommandLineToArgvW(GetCommandLineW(), &argumentCount);
+    PALACE_LOG_INFO("Processing %d command line arguments", argumentCount);
+
     if (commandLineArguments != NULL) {
         for (int i = 0; i < argumentCount; ++i) {
             const std::wstring s = commandLineArguments[i];

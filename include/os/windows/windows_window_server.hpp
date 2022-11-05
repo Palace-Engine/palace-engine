@@ -12,6 +12,9 @@ namespace palace {
 
 class WindowsApplicationContext;
 class WindowsWindowServer : public WindowServer {
+    PALACE_OBJECT_DATA(WindowsWindowServer, WindowServer,
+                       "Window server for Windows OSs.");
+
     friend WindowsApplicationContext;
 
 public:

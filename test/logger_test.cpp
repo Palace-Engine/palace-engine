@@ -11,7 +11,7 @@ public:
     std::string getLogMessage(size_t i) const { return m_logMessages[i]; }
 
 private:
-    virtual void log(std::string_view message) override {
+    virtual void log(std::string_view message, bool critical) override {
         m_logMessages.append(message.data());
     }
 

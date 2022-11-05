@@ -10,6 +10,11 @@
 namespace palace {
 
 class ApplicationContext : public PlatformObject {
+    PALACE_OBJECT_DATA(ApplicationContext, PlatformObject,
+                       "Application-level context.");
+
+    friend EngineContext;
+
 public:
     struct DefaultParameters {
         int argc;

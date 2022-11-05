@@ -9,8 +9,12 @@
 
 namespace palace {
 
+class WindowsEngineContext;
 class WindowsApplicationContext : public ApplicationContext {
-    friend ApplicationContext;
+    PALACE_OBJECT_DATA(WindowsApplicationContext, ApplicationContext,
+                       "Application-level context for Windows applications.");
+
+    friend WindowsEngineContext;
 
 public:
 #if PALACE_PLATFORM_WINDOWS

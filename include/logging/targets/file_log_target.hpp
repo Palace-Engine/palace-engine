@@ -17,7 +17,7 @@ public:
     bool resume(std::string_view filename);
 
 private:
-    virtual void log(std::string_view message);
+    virtual void log(std::string_view message, bool critical) override;
     virtual void onClose();
 
     std::string_view timestamp() const;

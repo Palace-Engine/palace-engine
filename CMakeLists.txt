@@ -78,6 +78,7 @@ add_library("palace-engine" STATIC
         src/os/window_server.cpp
         src/os/windows/windows_application_context.cpp
         src/os/windows/windows_display_device.cpp
+        src/os/windows/windows_engine_context.cpp
         src/os/windows/windows_window.cpp
         src/os/windows/windows_window_server.cpp
         src/platform/platform_object.cpp
@@ -104,6 +105,7 @@ add_library("palace-engine" STATIC
         include/os/window_server.hpp
         include/os/windows/windows_application_context.hpp
         include/os/windows/windows_display_device.hpp
+        include/os/windows/windows_engine_context.hpp
         include/os/windows/windows_window.hpp
         include/os/windows/windows_window_server.hpp
         include/platform/disable_warnings.hpp

@@ -17,34 +17,68 @@ palace::WindowsWindowServer::~WindowsWindowServer() {}
 #if PALACE_PLATFORM_WINDOWS
 palace::Window *
 palace::WindowsWindowServer::spawnWindow(const Window::Parameters &params) {
+    PALACE_LOG_INFO("Spawning new window: [ title: \"%s\", style: %d, position: "
+                    "[%d, %d], size: [%d, %d] ]",
+                    params.title.c_str(),
+                    static_cast<unsigned int>(params.style),
+                    params.position.x(), params.position.y(), params.size.w(),
+                    params.size.h());
+
     WindowsWindow *parent = (params.parent != nullptr)
                                     ? m_windows[params.parent->findId()]
                                     : nullptr;
     const UINT style = WindowsWindow::internalToWindowsStyle(params.style);
     HWND parentHandle = (parent != nullptr) ? parent->m_handle : NULL;
     ATOM windowClass;
-    if (!registerWindowsClass(&windowClass)) { return nullptr; }
+    if (!registerWindowsClass(&windowClass)) {
+        PALACE_LOG_ERROR("Window class registration failed.");
+        return nullptr;
+    }
 
     WindowsWindow *newWindow = m_windows.create();
     addObject(newWindow);
-    newWindow->initialize(params);
-    newWindow->m_server = this;
-    newWindow->m_handle = CreateWindow(
+    PALACE_LOG_INFO("Created new window object with id=@%u", newWindow->id());
+
+    HWND newWindowHandle;
+    newWindowHandle = CreateWindow(
             MAKEINTATOM(windowClass), params.title.c_str(), style,
             params.position.x(), params.position.y(), params.size.w(),
             params.size.h(), parentHandle, NULL, m_context->currentInstance(),
             reinterpret_cast<LPVOID>(newWindow));
 
+    if (newWindowHandle == NULL) {
+        PALACE_LOG_ERROR("WIN32::CreateWindow() returned NULL.");
+        goto failed;
+    }
+
+    newWindow->initialize(params);
+    newWindow->m_server = this;
+    newWindow->m_handle = newWindowHandle;
+
+    SetLastError(0);
     SetWindowLongPtr(newWindow->m_handle, GWLP_USERDATA,
                      reinterpret_cast<LONG_PTR>(newWindow));
-    SetWindowPos(newWindow->m_handle, NULL, 0, 0, 0, 0,
-                 SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER | SWP_FRAMECHANGED);
+    if (FAILED(HRESULT_FROM_WIN32(GetLastError()))) {
+        PALACE_LOG_ERROR("WIN32::SetWindowLongPtr() failed.");
+        goto failed;
+    }
+
+    if (SetWindowPos(newWindow->m_handle, NULL, 0, 0, 0, 0,
+                     SWP_NOMOVE | SWP_NOSIZE | SWP_NOZORDER |
+                             SWP_FRAMECHANGED) == FALSE) {
+        PALACE_LOG_ERROR("WIN32::SetWindowPos() failed.");
+        goto failed;
+    }
 
     newWindow->setStyle(params.style);
     newWindow->setPosition(params.position);
     newWindow->setSize(params.size);
 
     return static_cast<palace::Window *>(newWindow);
+
+failed:
+    m_windows.free(newWindow);
+    return nullptr;
 }
 
 void palace::WindowsWindowServer::updateDisplayDevices() {
@@ -68,7 +102,7 @@ palace::WindowsWindowServer::findIndex(const WindowsWindow *window) const {
 
 bool palace::WindowsWindowServer::registerWindowsClass(ATOM *windowClass) {
     const std::string windowClassName =
-            "PalaceWindowClass" + std::to_string(m_windowClasses++);
+            "PalaceWindowClass_" + std::to_string(m_windowClasses++);
 
     WNDCLASSEX wc;
     wc.cbSize = sizeof(WNDCLASSEX);
