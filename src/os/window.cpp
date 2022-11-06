@@ -14,7 +14,7 @@ void palace::Window::initialize(const Parameters &parameters) {
 }
 
 void palace::Window::setFullscreen(DisplayDevice *displayDevice) {
-    PALACE_LOG_INFO("Going fullscreen to display device: %s (id=@%u)",
+    PALACE_LOG_INFO("Going fullscreen to display device: {} (id=@{})",
                     displayDevice->deviceName(), displayDevice->id());
 
     setStyle(Style::Popup);
@@ -23,14 +23,13 @@ void palace::Window::setFullscreen(DisplayDevice *displayDevice) {
 }
 
 void palace::Window::setPosition(const math::ivec2 &position) {
-    PALACE_LOG_DEBUG("Position was set to: [%d, %d]", position.x(),
-                     position.y());
+    PALACE_LOG_DEBUG("Position was set to: {}", position);
 
     updatePositionCache(position);
 }
 
 void palace::Window::setSize(const math::ivec2 &size) {
-    PALACE_LOG_DEBUG("Size was set to: [%d, %d]", size.x(), size.y());
+    PALACE_LOG_DEBUG("Size was set to: {}", size);
 
     updateContentSizeCache(size);
 }
@@ -45,8 +44,8 @@ palace::Window::Window(Platform platform) : PlatformObject(platform) {
 }
 
 void palace::Window::updateSizeCache(const math::ivec2 &size) {
-    PALACE_LOG_DEBUG("Updating window size cache: [%d, %d] -> [%d, %d]",
-                     m_size.w(), m_size.h(), size.w(), size.h());
+    PALACE_LOG_DEBUG("Updating window size cache: {} -> {}",
+                     m_size, size);
 
     if (size != m_size) {
         // TODO: call event handler
@@ -56,9 +55,8 @@ void palace::Window::updateSizeCache(const math::ivec2 &size) {
 }
 
 void palace::Window::updatePositionCache(const math::ivec2 &position) {
-    PALACE_LOG_DEBUG("Updating window position cache: [%d, %d] -> [%d, %d]",
-                     m_position.x(), m_position.y(), position.x(),
-                     position.y());
+    PALACE_LOG_DEBUG("Updating window position cache: {} -> {}",
+                     m_position, position);
 
     if (position != m_position) {
         // TODO: call event handler
@@ -68,9 +66,8 @@ void palace::Window::updatePositionCache(const math::ivec2 &position) {
 }
 
 void palace::Window::updateContentSizeCache(const math::ivec2 &contentSize) {
-    PALACE_LOG_DEBUG("Updating window content size cache: [%d, %d] -> [%d, %d]",
-                     m_contentSize.w(), m_contentSize.h(), contentSize.w(),
-                     contentSize.h());
+    PALACE_LOG_DEBUG("Updating window content size cache: {} -> {}",
+                     m_contentSize, contentSize);
 
     if (contentSize != m_contentSize) {
         // TODO: call event handler
@@ -82,9 +79,8 @@ void palace::Window::updateContentSizeCache(const math::ivec2 &contentSize) {
 void palace::Window::updateContentPositionCache(
         const math::ivec2 &contentPosition) {
     PALACE_LOG_DEBUG(
-            "Updating window content position cache: [%d, %d] -> [%d, %d]",
-            m_contentPosition.x(), m_contentPosition.y(), contentPosition.x(),
-            contentPosition.y());
+            "Updating window content position cache: {} -> {}",
+            m_contentPosition, contentPosition);
 
     if (contentPosition != m_contentPosition) {
         // TODO: call event handler

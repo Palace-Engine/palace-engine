@@ -23,9 +23,9 @@ TEST(LoggerTest, SanityTest) {
 
     TestLogTarget *logTarget = logger.addTarget<TestLogTarget>();
 
-    logger.info("TEST MESSAGE %i %i", 5, 10);
+    logger.info("TEST");
     EXPECT_EQ(logTarget->logMessageCount(), 1);
 
     std::string msg = logTarget->getLogMessage(0);
-    EXPECT_EQ(msg.substr(29, msg.size() - 29 - 1), "TEST MESSAGE 5 10");
+    EXPECT_EQ(msg.substr(32, 4), "TEST");
 }

@@ -23,9 +23,10 @@ void palace::WindowsWindow::initialize(const Parameters &parameters) {
 void palace::WindowsWindow::setState(State state) {
     Window::setState(state);
 
+    PALACE_LOG_INFO("State set to {}", state);
+
 #if PALACE_PLATFORM_WINDOWS
     if (state == State::Closed) {
-        PALACE_LOG_INFO("State set to closed.");
         if (DestroyWindow(m_handle) == FALSE) {
             PALACE_LOG_ERROR("WIN32::DestroyWindow() failed.");
         }
@@ -49,8 +50,7 @@ void palace::WindowsWindow::setStyle(Style style) {
 }
 
 void palace::WindowsWindow::setPosition(const math::ivec2 &position) {
-    PALACE_LOG_INFO("Setting window position: [%d, %d]", position.x(),
-                    position.y());
+    PALACE_LOG_INFO("Setting window position:{}", position);
 
 #if PALACE_PLATFORM_WINDOWS
     if (SetWindowPos(m_handle, NULL, position.x(), position.y(), 0, 0,
@@ -61,7 +61,7 @@ void palace::WindowsWindow::setPosition(const math::ivec2 &position) {
 }
 
 void palace::WindowsWindow::setSize(const math::ivec2 &size) {
-    PALACE_LOG_INFO("Setting window size: [%d, %d]", size.w(), size.h());
+    PALACE_LOG_INFO("Setting window size: {}", size);
 
 #if PALACE_PLATFORM_WINDOWS
     if (SetWindowPos(m_handle, NULL, 0, 0, size.w(), size.h(),
@@ -110,9 +110,9 @@ LRESULT palace::WindowsWindow::internalWinProc(UINT msg, WPARAM wParam,
                                                LPARAM lParam) {
     const char *messageName = messageTypeName(msg);
     if (messageName == nullptr) {
-        PALACE_LOG_TRACE_OPT("[Ignored] WIN32 message: 0x%X", msg);
+        PALACE_LOG_TRACE_OPT("[Ignored] WIN32 message: {:#x}", msg);
     } else {
-        PALACE_LOG_DEBUG("WIN32 message: %s (0x%X)", messageName, msg);
+        PALACE_LOG_DEBUG("WIN32 message: {} ({:#x})", messageName, msg);
     }
 
     switch (msg) {

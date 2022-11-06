@@ -5,16 +5,15 @@
 #include "../logging/log_level.hpp"
 #include "../logging/log_target.hpp"
 #include "../memory/heap_allocator.hpp"
+#include "formatters.hpp"
 
+#include <format>
 #include <string_view>
 
 namespace palace {
 
 #define PALACE_LOGGER_LOG_PROTOTYPE(name, level)                               \
-    template<typename... Args>                                                 \
-    void name(std::string_view format, Args... args) {                         \
-        log(level, format, args...);                                           \
-    }
+    void name(std::string_view formatted) { log(level, formatted); }
 
 class Logger {
 public:
@@ -47,8 +46,7 @@ public:
     PALACE_LOGGER_LOG_PROTOTYPE(trace, LogLevel::Trace);
 
 private:
-    template<typename... Args>
-    void log(LogLevel level, std::string_view format, Args... args) {
+    void log(LogLevel level, std::string_view formatted) {
         if (static_cast<unsigned int>(level) >
                     static_cast<unsigned int>(m_maximumLogLevel) ||
             m_targets.size() == 0) {
@@ -57,17 +55,9 @@ private:
 
         const bool critical = static_cast<unsigned int>(level) <=
                               static_cast<unsigned int>(LogLevel::Error);
-        const size_t capacity = m_buffer.capacity();
-        const size_t size =
-                snprintf(m_buffer.data(), capacity + 1, format.data(), args...);
-        if (size > m_buffer.capacity()) {
-            m_buffer.resize(size);
-            snprintf(m_buffer.data(), size + 1, format.data(), args...);
-        }
-
         const size_t n = m_targets.size();
         for (size_t i = 0; i < n; ++i) {
-            m_targets[i]->log(level, m_buffer.c_str(), critical);
+            m_targets[i]->log(level, formatted, critical);
         }
     }
 

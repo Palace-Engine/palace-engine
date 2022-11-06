@@ -9,8 +9,26 @@ namespace palace {
 
 #define PALACE_ENGINE_LOG_LEVEL PALACE_ENGINE_LOG_LEVEL_DEBUG
 
-#define PALACE_OBJECT_LOG(level, format, ...)                                  \
-    level(format, s_objectName, __func__, __LINE__ __VA_OPT__(, ) __VA_ARGS__)
+/*
+#define OBJECT_LOG_FUNCTION(name, level)                                       \
+    template<typename... Args>                                                 \
+    void name(std::string_view format, std::string_view objectName,            \
+              std::string_view function, int line, Args... args) {             \
+        std::stringstream ss;                                                  \
+        ss << objectName << "("                                                \
+           << "id=@" << id() << ")::" << function << "::L" << line << " | "    \
+           << format;                                                          \
+        logger().name(ss.str(), args...);                                      \
+    }
+    */
+
+#define PALACE_OBJECT_LOG(level, format_string, ...)                           \
+    {                                                                          \
+        const std::string formatted = std::format(                             \
+                "{}(id=@{})::{}::L{} | " format_string, s_objectName,         \
+                this->id(), __func__, __LINE__ __VA_OPT__(, ) __VA_ARGS__);    \
+        logger().level(formatted);                                             \
+    }
 
 #define PALACE_LOG_FATAL(format, ...)                                          \
     PALACE_OBJECT_LOG(fatal, format __VA_OPT__(, ) __VA_ARGS__)
@@ -58,7 +76,7 @@ namespace palace {
 #endif
 #if defined(PALACE_ENGINE_LOG_LEVEL) and                                       \
         PALACE_ENGINE_LOG_LEVEL >= PALACE_ENGINE_LOG_LEVEL_TRACE
-#define PALACE_LOG_TRACE_OPT PALACE_LOG_TRACE   
+#define PALACE_LOG_TRACE_OPT PALACE_LOG_TRACE
 #else
 #define PALACE_LOG_TRACE_OPT PALACE_LOG_NO_OP
 #endif
@@ -68,17 +86,6 @@ public:                                                                        \
     static constexpr const char *s_objectName = #object;                       \
     static constexpr const char *s_parentObjectName = #parent_class;           \
     static constexpr const char *s_description = description;
-
-#define OBJECT_LOG_FUNCTION(name, level)                                       \
-    template<typename... Args>                                                 \
-    void name(std::string_view format, std::string_view objectName,            \
-              std::string_view function, int line, Args... args) {             \
-        std::stringstream ss;                                                  \
-        ss << objectName << "("                                                \
-           << "id=@" << id() << ")::" << function << "::L" << line << " | "    \
-           << format;                                                          \
-        logger().name(ss.str(), args...);                                      \
-    }
 
 class EngineObject {
     PALACE_OBJECT_DATA(EngineObject, , "Base object type.");
@@ -98,14 +105,6 @@ public:
     }
 
     ObjectId id() const { return m_id; }
-
-protected:
-    OBJECT_LOG_FUNCTION(fatal, LogLevel::Fatal);
-    OBJECT_LOG_FUNCTION(error, LogLevel::Error);
-    OBJECT_LOG_FUNCTION(warn, LogLevel::Warning);
-    OBJECT_LOG_FUNCTION(info, LogLevel::Info);
-    OBJECT_LOG_FUNCTION(debug, LogLevel::Debug);
-    OBJECT_LOG_FUNCTION(trace, LogLevel::Trace);
 
 private:
     EngineContext *m_context;

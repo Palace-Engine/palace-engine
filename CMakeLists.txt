@@ -94,6 +94,7 @@ add_library("palace-engine" STATIC
         include/logging/log_level.hpp
         include/logging/log_target.hpp
         include/logging/logger.hpp
+        include/logging/formatters.hpp
         include/logging/targets/file_log_target.hpp
         include/math/math.hpp
         include/memory/alloc.hpp

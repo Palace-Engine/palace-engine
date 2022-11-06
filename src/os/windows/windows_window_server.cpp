@@ -17,12 +17,11 @@ palace::WindowsWindowServer::~WindowsWindowServer() {}
 #if PALACE_PLATFORM_WINDOWS
 palace::Window *
 palace::WindowsWindowServer::spawnWindow(const Window::Parameters &params) {
-    PALACE_LOG_INFO("Spawning new window: [ title: \"%s\", style: %d, position: "
-                    "[%d, %d], size: [%d, %d] ]",
-                    params.title.c_str(),
-                    static_cast<unsigned int>(params.style),
-                    params.position.x(), params.position.y(), params.size.w(),
-                    params.size.h());
+    PALACE_LOG_INFO("Spawning new window: [ title: \"{}\", style: {}, position: "
+                    "{}, size: {} ]",
+                    params.title,
+                    params.style,
+                    params.position, params.size);
 
     WindowsWindow *parent = (params.parent != nullptr)
                                     ? m_windows[params.parent->findId()]
@@ -37,7 +36,7 @@ palace::WindowsWindowServer::spawnWindow(const Window::Parameters &params) {
 
     WindowsWindow *newWindow = m_windows.create();
     addObject(newWindow);
-    PALACE_LOG_INFO("Created new window object with id=@%u", newWindow->id());
+    PALACE_LOG_INFO("Created new window object with id=@{}", newWindow->id());
 
     HWND newWindowHandle;
     newWindowHandle = CreateWindow(
