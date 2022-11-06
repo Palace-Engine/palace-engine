@@ -91,10 +91,11 @@ add_library("palace-engine" STATIC
         include/core/object.hpp
         include/core/object_container.hpp
         include/debug/assert.hpp
+        include/formatting/formatters.hpp
+        include/formatting/formatting.hpp
         include/logging/log_level.hpp
         include/logging/log_target.hpp
         include/logging/logger.hpp
-        include/logging/formatters.hpp
         include/logging/targets/file_log_target.hpp
         include/math/math.hpp
         include/memory/alloc.hpp
@@ -122,6 +123,7 @@ add_library("palace-engine" STATIC
 
 create_filter("core" "core")
 create_filter("debug" "debug")
+create_filter("formatting" "formatting")
 create_filter("info" "info")
 create_filter("logging" "logging")
 create_filter("logging\\targets" "logging/targets")
@@ -136,12 +138,26 @@ create_filter("types" "types")
 create_filter("utility" "utility")
 
 # -----------------------------------------------------------------------------
+# fmt
+# -----------------------------------------------------------------------------
+add_library(fmt STATIC
+        # Source files
+        dependencies/fmt/format.cc
+
+        # Header files
+        dependencies/fmt/fmt/core.h
+        dependencies/fmt/fmt/format.h
+        dependencies/fmt/fmt/format-inl.h
+)
+
+# -----------------------------------------------------------------------------
 # Libraries
 # -----------------------------------------------------------------------------
 target_link_libraries("palace-engine" PRIVATE
         palace-warnings
         palace-definitions
         palace-compile-options
+        fmt
 )
 
 # =========================================================

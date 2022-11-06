@@ -24,8 +24,8 @@ namespace palace {
 
 #define PALACE_OBJECT_LOG(level, format_string, ...)                           \
     {                                                                          \
-        const std::string formatted = std::format(                             \
-                "{}(id=@{})::{}::L{} | " format_string, s_objectName,         \
+        const std::string formatted = palace::format::format(                  \
+                "{}(id=@{})::{}::L{} | " format_string, s_objectName,          \
                 this->id(), __func__, __LINE__ __VA_OPT__(, ) __VA_ARGS__);    \
         logger().level(formatted);                                             \
     }
