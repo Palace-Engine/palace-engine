@@ -12,7 +12,7 @@ TEST(DynamicArrayTest, SanityTest) {
     EXPECT_EQ(d_arr.size(), 128);
     EXPECT_EQ(d_arr.capacity(), 128);
 
-    for (int i = 0; i < 128; ++i) { EXPECT_EQ(d_arr[i], i); }
+    for (size_t i = 0; i < 128; ++i) { EXPECT_EQ(d_arr[i], i); }
 
     d_arr.free();
 
@@ -28,7 +28,7 @@ TEST(DynamicArrayTest, Grow) {
     EXPECT_EQ(d_arr.size(), 128);
     EXPECT_GT(d_arr.capacity(), 128);
 
-    for (int i = 0; i < 128; ++i) { EXPECT_EQ(d_arr[i], i); }
+    for (size_t i = 0; i < 128; ++i) { EXPECT_EQ(d_arr[i], static_cast<int>(i)); }
 
     d_arr.free();
 
@@ -44,7 +44,7 @@ TEST(DynamicArrayTest, Insert) {
     EXPECT_EQ(d_arr.size(), 128);
     EXPECT_GT(d_arr.capacity(), 128);
 
-    for (int i = 0; i < 128; ++i) { EXPECT_EQ(d_arr[i], 128 - i - 1); }
+    for (size_t i = 0; i < 128; ++i) { EXPECT_EQ(d_arr[i], 128 - static_cast<int>(i) - 1); }
 
     d_arr.free();
 

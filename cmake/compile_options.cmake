@@ -4,7 +4,7 @@ function(set_compile_options project_name compiler)
     )
 
     set(CLANG_OPTIONS
-        # None
+        -Wno-gnu-zero-variadic-macro-arguments
     )
 
     set(GCC_OPTIONS
@@ -17,7 +17,7 @@ function(set_compile_options project_name compiler)
 
     if(compiler STREQUAL "MSVC")
         set(OPTIONS ${MSVC_OPTIONS})
-    elseif(compiler STREQUAL "Clang")
+    elseif(compiler MATCHES ".*Clang")
         set(OPTIONS ${CLANG_OPTIONS})
     elseif(compiler STREQUAL "GCC")
         set(OPTIONS ${GCC_OPTIONS})

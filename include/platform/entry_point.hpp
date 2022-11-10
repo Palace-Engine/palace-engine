@@ -2,7 +2,7 @@
 #define ATG_PALACE_ENGINE_ENTRY_POINT_HPP
 
 #include "../logging/targets/file_log_target.hpp"
-#include "../os/windows/windows_engine_context.hpp"
+#include "../os/winapi/winapi_engine_context.hpp"
 #include "platform_detection.hpp"
 #include "platform_includes.hpp"
 
@@ -22,7 +22,7 @@ int main(int argc, char *argv[]) {
     return returnValue;
 }
 #else
-#include "../os/windows/windows_application_context.hpp"
+#include "../os/winapi/winapi_application_context.hpp"
 
 int APIENTRY WINAPI WinMain(_In_ HINSTANCE hInstance,
                             _In_opt_ HINSTANCE hPrevInstance,

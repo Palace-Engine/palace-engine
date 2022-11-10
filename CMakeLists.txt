@@ -25,9 +25,11 @@ set_palace_warnings(palace-warnings)
 add_library(palace-definitions INTERFACE)
 target_compile_definitions(palace-definitions INTERFACE
   $<$<CONFIG:Debug>:PALACE_DEBUG>
+  $<$<NOT:$<CONFIG:Debug>>:PALACE_RELEASE>
+  $<$<CONFIG:Release>:PALACE_RELEASE>
 )
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     target_compile_definitions(palace-definitions INTERFACE PALACE_COMPILER_CLANG)
     set(COMPILER "Clang")
 elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -76,11 +78,16 @@ add_library("palace-engine" STATIC
         src/os/display_device.cpp
         src/os/window.cpp
         src/os/window_server.cpp
-        src/os/windows/windows_application_context.cpp
-        src/os/windows/windows_display_device.cpp
-        src/os/windows/windows_engine_context.cpp
-        src/os/windows/windows_window.cpp
-        src/os/windows/windows_window_server.cpp
+        src/os/cocoa/cocoa_application_context.cpp
+        src/os/cocoa/cocoa_display_device.cpp
+        src/os/cocoa/cocoa_engine_context.cpp
+        src/os/cocoa/cocoa_window.cpp
+        src/os/cocoa/cocoa_window_server.cpp
+        src/os/winapi/winapi_application_context.cpp
+        src/os/winapi/winapi_display_device.cpp
+        src/os/winapi/winapi_engine_context.cpp
+        src/os/winapi/winapi_window.cpp
+        src/os/winapi/winapi_window_server.cpp
         src/platform/platform_object.cpp
         src/platform/platform.cpp
 
@@ -105,11 +112,16 @@ add_library("palace-engine" STATIC
         include/os/display_device.hpp
         include/os/window.hpp
         include/os/window_server.hpp
-        include/os/windows/windows_application_context.hpp
-        include/os/windows/windows_display_device.hpp
-        include/os/windows/windows_engine_context.hpp
-        include/os/windows/windows_window.hpp
-        include/os/windows/windows_window_server.hpp
+        include/os/cocoa/cocoa_application_context.hpp
+        include/os/cocoa/cocoa_display_device.hpp
+        include/os/cocoa/cocoa_engine_context.hpp
+        include/os/cocoa/cocoa_window.hpp
+        include/os/cocoa/cocoa_window_server.hpp
+        include/os/winapi/winapi_application_context.hpp
+        include/os/winapi/winapi_display_device.hpp
+        include/os/winapi/winapi_engine_context.hpp
+        include/os/winapi/winapi_window.hpp
+        include/os/winapi/winapi_window_server.hpp
         include/platform/disable_warnings.hpp
         include/platform/enable_warnings.hpp
         include/platform/entry_point.hpp
@@ -121,6 +133,14 @@ add_library("palace-engine" STATIC
         include/types/string.hpp
 )
 
+target_sources(palace-engine PRIVATE
+        src/os/cocoa/binding/cocoa_interface_context.m
+
+        include/os/cocoa/binding/cocoa_interface.h
+        include/os/cocoa/binding/cocoa_interface_context.h
+        include/os/cocoa/binding/cocoa_interface_internal_types.h
+)
+
 create_filter("core" "core")
 create_filter("debug" "debug")
 create_filter("formatting" "formatting")
@@ -130,7 +150,9 @@ create_filter("logging\\targets" "logging/targets")
 create_filter("math" "math")
 create_filter("memory" "memory")
 create_filter("os" "os")
-create_filter("os\\windows" "os/windows")
+create_filter("os\\cocoa" "os/cocoa")
+create_filter("os\\cocoa\\binding" "os/cocoa/binding")
+create_filter("os\\winapi" "os/winapi")
 create_filter("platform" "platform")
 create_filter("public" "public")
 create_filter("systems" "systems")

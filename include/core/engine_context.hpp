@@ -6,7 +6,7 @@
 namespace palace {
 
 using ObjectId = unsigned long long;
-static constexpr ObjectId InvalidId = -1;
+static constexpr ObjectId InvalidId = static_cast<ObjectId>(-1);
 
 class ApplicationContext;
 class EngineContext {

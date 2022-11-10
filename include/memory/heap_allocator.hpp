@@ -142,7 +142,7 @@ public:
         const BlockInformation *info = reinterpret_cast<BlockInformation *>(
                 reinterpret_cast<uint8_t *>(memory) - dataBlockSize);
 
-        for (int i = 0; i < info->n; ++i) { memory[i].~T_Data(); }
+        for (size_t i = 0; i < info->n; ++i) { memory[i].~T_Data(); }
 
         palace_mem_free(info->actualAddress);
         memory = nullptr;
@@ -190,7 +190,7 @@ public:
     inline size_t getMemoryUsed() { return m_memoryUsed; }
     inline size_t getActiveAllocations() { return m_memoryBlocks.size(); }
     inline size_t getTotalAllocations() { return m_totalAllocations; }
-    const MemoryBlock &getActiveAllocation(int i) { return m_memoryBlocks[i]; }
+    const MemoryBlock &getActiveAllocation(size_t i) { return m_memoryBlocks[i]; }
 
     void clearRecords() {
         std::lock_guard<std::mutex> guard(m_trackingGuard);

@@ -8,7 +8,7 @@ namespace palace {
 class WindowsWindowServer;
 class WindowsDisplayDevice : public DisplayDevice {
     PALACE_OBJECT_DATA(WindowsDisplayDevice, DisplayDevice,
-                       "Display device type for Windows OSs.");
+                       "Display device type for Windows OSs.")
 
     friend WindowsWindowServer;
 

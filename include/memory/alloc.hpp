@@ -8,8 +8,8 @@
 #elif defined(PALACE_COMPILER_GCC) || defined(PALACE_COMPILER_CLANG)
 #include <stdlib.h>
 #define palace_mem_alloc(alignment, size)                                      \
-    std::aligned_alloc((alignment), (size))
-#define palace_mem_free(buffer) std::free((buffer))
+    aligned_alloc((alignment), (size))
+#define palace_mem_free(buffer) ::free((buffer))
 #elif defined(PALACE_COMPILER_INTEL)
 #include <malloc.h>
 #define palace_mem_alloc(alignment, size) _mm_malloc((size), (alignment))

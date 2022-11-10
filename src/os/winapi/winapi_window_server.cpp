@@ -1,7 +1,7 @@
-#include "../../../include/os/windows/windows_window_server.hpp"
+#include "../../../include/os/winapi/winapi_window_server.hpp"
 
-#include "../../../include/os/windows/windows_application_context.hpp"
-#include "../../../include/os/windows/windows_display_device.hpp"
+#include "../../../include/os/winapi/winapi_application_context.hpp"
+#include "../../../include/os/winapi/winapi_display_device.hpp"
 
 palace::WindowsWindowServer::WindowsWindowServer()
     : WindowServer(Platform::Windows, &m_windows, &m_displayDevices) {
@@ -166,12 +166,12 @@ LRESULT palace::WindowsWindowServer::internalWinProc(WindowsWindow *window,
 }
 #else
 palace::Window *
-palace::WindowsWindowManager::spawnWindow(const Window::Parameters &) {
+palace::WindowsWindowServer::spawnWindow(const Window::Parameters &) {
     return nullptr;
 }
 
-void palace::WindowsWindowManager::updateDisplayDevices() {}
-void palace::WindowsWindowManager::processMessages() {}
+void palace::WindowsWindowServer::updateDisplayDevices() {}
+void palace::WindowsWindowServer::processMessages() {}
 #endif
 
 palace::WindowsDisplayDevice *

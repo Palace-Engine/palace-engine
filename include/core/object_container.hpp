@@ -72,7 +72,7 @@ public:
             if (m_array[i] == object) { return i; }
         }
 
-        return -1;
+        return static_cast<size_t>(-1);
     }
 
     inline size_t findFirstBase(const T_Base *object) const {
@@ -81,10 +81,10 @@ public:
             if (static_cast<T_Base *>(m_array[i]) == object) { return i; }
         }
 
-        return -1;
+        return static_cast<size_t>(-1);
     }
 
-    void free() {
+    virtual void free() override {
         const size_t n = m_array.size();
         for (size_t i = 0; i < n; ++i) { free(static_cast<size_t>(0)); }
     }

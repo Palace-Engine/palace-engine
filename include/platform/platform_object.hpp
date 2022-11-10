@@ -11,7 +11,7 @@ namespace palace {
 class PlatformObject : public EngineObject {
     PALACE_OBJECT_DATA(PlatformObject, EngineObject,
                        "Base type for defining objects that may have "
-                       "platform-specific drivers.");
+                       "platform-specific drivers.")
 
 public:
     virtual ~PlatformObject();

@@ -46,7 +46,7 @@ std::string_view palace::LogTarget::logLevelToString(LogLevel level) {
 
 std::string_view palace::LogTarget::timestamp() {
     std::time_t result = std::time(nullptr);
-    const size_t length = strftime(m_timestampBuffer, 64, "%Y-%m-%d %H:%M:%S",
+    strftime(m_timestampBuffer, 64, "%Y-%m-%d %H:%M:%S",
                                    std::localtime(&result));
 
     return m_timestampBuffer;

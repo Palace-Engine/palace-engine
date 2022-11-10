@@ -18,7 +18,7 @@ public:
 
 private:
     virtual void log(std::string_view message, bool critical) override;
-    virtual void onClose();
+    virtual void onClose() override;
 
     std::string_view timestamp() const;
     std::fstream m_file;

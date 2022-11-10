@@ -1,4 +1,4 @@
-#include "../../../include/os/windows/windows_application_context.hpp"
+#include "../../../include/os/winapi/winapi_application_context.hpp"
 
 #include <codecvt>
 #include <locale>
@@ -55,6 +55,8 @@ void palace::WindowsApplicationContext::initialize(const Parameters &params) {
     }
 
     m_windowServer.setContext(this);
+#else
+    palace::ApplicationContext::initialize(params);
 #endif
 }
 

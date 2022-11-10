@@ -2,7 +2,7 @@
 
 #include "../include/memory/heap_allocator.hpp"
 
-bool checkAlignment(void *p, int alignment) {
+bool checkAlignment(void *p, size_t alignment) {
     union PointerToUint64 {
         void *p;
         std::uint64_t l;

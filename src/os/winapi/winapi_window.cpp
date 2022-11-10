@@ -1,6 +1,6 @@
-#include "../../../include/os/windows/windows_window.hpp"
+#include "../../../include/os/winapi/winapi_window.hpp"
 
-#include "../../../include/os/windows/windows_window_server.hpp"
+#include "../../../include/os/winapi/winapi_window_server.hpp"
 
 palace::WindowsWindow::WindowsWindow() : Window(Platform::Windows) {
     m_server = nullptr;

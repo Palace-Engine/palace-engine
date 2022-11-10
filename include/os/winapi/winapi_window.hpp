@@ -11,7 +11,7 @@ class WindowsWindowServer;
 
 class WindowsWindow : public Window {
     PALACE_OBJECT_DATA(WindowsWindow, Window,
-                       "Display device type for Windows OSs.");
+                       "Display device type for Windows OSs.")
 
     friend WindowsWindowServer;
 

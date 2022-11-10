@@ -88,7 +88,7 @@ public:                                                                        \
     static constexpr const char *s_description = description;
 
 class EngineObject {
-    PALACE_OBJECT_DATA(EngineObject, , "Base object type.");
+    PALACE_OBJECT_DATA(EngineObject, , "Base object type.")
 
     friend EngineContext;
 

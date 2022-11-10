@@ -43,7 +43,7 @@ void palace::FileLogTarget::onClose() { m_file.close(); }
 
 std::string_view palace::FileLogTarget::timestamp() const {
     std::time_t result = std::time(nullptr);
-    const size_t length = strftime(m_timestampBuffer, 64, "%Y%m%d_T%H%M%S",
+    strftime(m_timestampBuffer, 64, "%Y%m%d_T%H%M%S",
                                    std::localtime(&result));
 
     return m_timestampBuffer;

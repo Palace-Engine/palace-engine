@@ -15,8 +15,8 @@
 namespace palace {
 
 template<typename... ARGS>
-void internalAssert(bool condition, std::string_view file, int line,
-                    const ARGS &...args) {
+void internalAssert(bool condition, std::string_view, int,
+                    const ARGS &...) {
     if (!condition) {
 #if defined(PALACE_COMPILER_MSVC) || defined(PALACE_COMPILER_INTEL)
         __debugbreak();

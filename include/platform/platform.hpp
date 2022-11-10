@@ -5,7 +5,7 @@
 
 namespace palace {
 
-enum class Platform { Linux, Windows, Unknown };
+enum class Platform { Linux, MacOS, Windows, Unknown };
 
 void getName(Platform platform, string *target);
 

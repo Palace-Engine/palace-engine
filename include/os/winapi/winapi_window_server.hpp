@@ -1,19 +1,19 @@
-#ifndef ATG_PALACE_ENGINE_WINDOWS_WINDOW_MANAGER_HPP
-#define ATG_PALACE_ENGINE_WINDOWS_WINDOW_MANAGER_HPP
+#ifndef ATG_PALACE_ENGINE_WINDOWS_WINDOW_SERVER_HPP
+#define ATG_PALACE_ENGINE_WINDOWS_WINDOW_SERVER_HPP
 
 #include "../window_server.hpp"
 
 #include "../../platform/platform_detection.hpp"
 #include "../../platform/platform_includes.hpp"
-#include "windows_display_device.hpp"
-#include "windows_window.hpp"
+#include "winapi_display_device.hpp"
+#include "winapi_window.hpp"
 
 namespace palace {
 
 class WindowsApplicationContext;
 class WindowsWindowServer : public WindowServer {
     PALACE_OBJECT_DATA(WindowsWindowServer, WindowServer,
-                       "Window server for Windows OSs.");
+                       "Window server for Windows OSs.")
 
     friend WindowsApplicationContext;
 
@@ -57,4 +57,4 @@ private:
 
 }// namespace rebar
 
-#endif /* ATG_PALACE_ENGINE_WINDOWS_WINDOW_MANAGER_HPP */
+#endif /* ATG_PALACE_ENGINE_WINDOWS_WINDOW_SERVER_HPP */

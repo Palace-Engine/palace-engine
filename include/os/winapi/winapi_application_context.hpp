@@ -5,14 +5,14 @@
 
 #include "../../platform/platform_detection.hpp"
 #include "../../platform/platform_includes.hpp"
-#include "windows_window_server.hpp"
+#include "winapi_window_server.hpp"
 
 namespace palace {
 
 class WindowsEngineContext;
 class WindowsApplicationContext : public ApplicationContext {
     PALACE_OBJECT_DATA(WindowsApplicationContext, ApplicationContext,
-                       "Application-level context for Windows applications.");
+                       "Application-level context for Windows applications.")
 
     friend WindowsEngineContext;
 

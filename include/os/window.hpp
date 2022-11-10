@@ -12,7 +12,7 @@ class WindowServer;
 
 class Window : public PlatformObject {
     PALACE_OBJECT_DATA(Window, PlatformObject,
-                       "Base type for native windows.");
+                       "Base type for native windows.")
 
     friend WindowServer;
 
@@ -77,6 +77,8 @@ protected:
     WindowEventHandler *m_eventHandler;
 };
 
+}// namespace palace
+
 PALACE_ENUM_FORMATTER_BEGIN(palace::Window, State)
 PALACE_ENUM_FORMATTER_ENTRY(Visible)
 PALACE_ENUM_FORMATTER_ENTRY(Hidden)
@@ -91,7 +93,5 @@ PALACE_ENUM_FORMATTER_ENTRY(Windowed)
 PALACE_ENUM_FORMATTER_ENTRY(Popup)
 PALACE_ENUM_FORMATTER_ENTRY(Unknown)
 PALACE_ENUM_FORMATTER_END()
-
-}// namespace palace
 
 #endif /* ATG_PALACE_ENGINE_WINDOW_H */
