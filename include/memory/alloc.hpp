@@ -6,10 +6,10 @@
 #define palace_mem_alloc(alignment, size) _aligned_malloc((size), (alignment))
 #define palace_mem_free(buffer) _aligned_free((buffer))
 #elif defined(PALACE_COMPILER_GCC) || defined(PALACE_COMPILER_CLANG)
-#include <stdlib.h>
+#include <cstdlib>
 #define palace_mem_alloc(alignment, size)                                      \
-    aligned_alloc((alignment), (size))
-#define palace_mem_free(buffer) ::free((buffer))
+    std::aligned_alloc((alignment), (size))
+#define palace_mem_free(buffer) std::free((buffer))
 #elif defined(PALACE_COMPILER_INTEL)
 #include <malloc.h>
 #define palace_mem_alloc(alignment, size) _mm_malloc((size), (alignment))

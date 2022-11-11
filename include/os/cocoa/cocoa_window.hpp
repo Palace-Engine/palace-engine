@@ -27,9 +27,13 @@ public:
 
 protected:
     virtual void initialize(const Parameters &parameters) override;
-
+    
 private:
     CocoaWindowServer *m_server;
+    
+#if PALACE_SUPPORTS_COCOA
+    cocoa_interface::WindowHandle m_window;
+#endif /* PALACE_SUPPORTS_COCOA */
 };
 
 }// namespace palace

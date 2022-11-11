@@ -6,7 +6,6 @@
 #include "../../platform/platform_detection.hpp"
 #include "../../platform/platform_includes.hpp"
 #include "cocoa_window_server.hpp"
-#include "binding/cocoa_interface.h"
 
 namespace palace {
 
@@ -26,7 +25,7 @@ public:
     
 private:
     CocoaWindowServer m_windowServer;
-    PalaceCocoaContextHandle m_context;
+    cocoa_interface::ContextHandle m_context;
 };
 
 }// namespace palace

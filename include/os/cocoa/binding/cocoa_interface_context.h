@@ -1,17 +1,16 @@
 #ifndef ATG_PALACE_ENGINE_COCOA_INTERFACE_CONTEXT_H
 #define ATG_PALACE_ENGINE_COCOA_INTERFACE_CONTEXT_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace palace {
+namespace cocoa_interface {
 
-typedef void * PalaceCocoaContextHandle;
+typedef void * ContextHandle;
 
-PalaceCocoaContextHandle palaceCreateCocoaContext(void);
-void palaceFreeCocoaContext(PalaceCocoaContextHandle context);
+ContextHandle createContext(void);
+void freeContext(ContextHandle context);
+void pollEvents(void);
 
-#ifdef __cplusplus
 }
-#endif
+}
 
 #endif /* ATG_PALACE_ENGINE_COCOA_INTERFACE_CONTEXT_H */

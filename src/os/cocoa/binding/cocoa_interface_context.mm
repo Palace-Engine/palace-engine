@@ -2,7 +2,8 @@
 
 #include "../../../../include/os/cocoa/binding/cocoa_interface_internal_types.h"
 
-#include <Cocoa/Cocoa.h>
+#import <Foundation/Foundation.h>
+#import <Cocoa/Cocoa.h>
 #include <stdlib.h>
 
 @interface PalaceCocoaApplicationDelegate : NSObject <NSApplicationDelegate>
@@ -14,10 +15,9 @@
 }
 @end
 
-PalaceCocoaContextHandle palaceCreateCocoaContext(void) {
+palace::cocoa_interface::ContextHandle palace::cocoa_interface::createContext(void) {
     @autoreleasepool {
-        PalaceCocoaContext *context =
-            (PalaceCocoaContext *)malloc(sizeof(PalaceCocoaContext));
+        Context *context = new Context;
         
         [NSApplication sharedApplication];
         [NSApp setActivationPolicy:NSApplicationActivationPolicyRegular];
@@ -33,19 +33,34 @@ PalaceCocoaContextHandle palaceCreateCocoaContext(void) {
             [NSApp run];
         }
         
-        return (PalaceCocoaContextHandle)context;
+        return static_cast<ContextHandle>(context);
     }
 }
 
-void palaceFreeCocoaContext(PalaceCocoaContextHandle contextHandle) {
+void palace::cocoa_interface::freeContext(ContextHandle contextHandle) {
     @autoreleasepool {
-        PalaceCocoaContext *context = (PalaceCocoaContext *)contextHandle;
+        Context *context = reinterpret_cast<Context *>(contextHandle);
         
         if (context->delegate) {
             CFRelease(context->delegate);
             context->delegate = nil;
         }
         
-        free(contextHandle);
+        delete context;
     }
+}
+
+void palace::cocoa_interface::pollEvents() {
+    @autoreleasepool {
+        for (;;) {
+            NSEvent* event = [NSApp nextEventMatchingMask:NSEventMaskAny
+                                                untilDate:[NSDate distantPast]
+                                                   inMode:NSDefaultRunLoopMode
+                                                  dequeue:YES];
+            if (event == nil)
+                break;
+
+            [NSApp sendEvent:event];
+        }
+    } // autoreleasepool
 }

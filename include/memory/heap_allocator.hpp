@@ -83,6 +83,19 @@ private:
         void *actualAddress;
         size_t n;
     };
+    
+    static constexpr bool validAlignment(size_t alignment) {
+        return (alignment == 0)
+            ? false
+            : (alignment & (alignment - 1)) == 0;
+    }
+    
+    static constexpr size_t alignedSize(size_t size, size_t alignment) {
+        const size_t sizeModAlignment = size & (alignment - 1);
+        return (sizeModAlignment == 0)
+            ? size
+            : size + (alignment - sizeModAlignment);
+    }
 
 public:
     HeapAllocator(const HeapAllocator &) = delete;
@@ -99,7 +112,10 @@ public:
     template<typename T_Data,
              size_t alignment = PALACE_DEFAULT_MEMORY_ALIGNMENT>
     static inline T_Data *allocate() {
-        void *const mem = palace_mem_alloc(alignment, sizeof(T_Data));
+        static_assert(validAlignment(alignment));
+        
+        void *const mem = palace_mem_alloc(
+                alignment, alignedSize(sizeof(T_Data), alignment));
         return new (mem) T_Data;
     }
 
@@ -112,13 +128,17 @@ public:
     template<typename T_Data,
              size_t alignment = PALACE_DEFAULT_MEMORY_ALIGNMENT>
     static inline T_Data *allocateArray(size_t n) {
-        const size_t dataBlockSize =
+        static_assert(validAlignment(alignment));
+                
+        constexpr size_t dataBlockSize =
                 alignment *
                 ((sizeof(size_t) + sizeof(BlockInformation) + alignment - 1) /
                  alignment);
 
         void *const mem =
-                palace_mem_alloc(alignment, dataBlockSize + sizeof(T_Data) * n);
+                palace_mem_alloc(alignment,
+                                 alignedSize(dataBlockSize + sizeof(T_Data) * n,
+                                             alignment));
         BlockInformation *info = new (mem) BlockInformation;
         info->actualAddress = mem;
         info->n = n;

@@ -13,6 +13,9 @@ class CocoaEngineContext : public EngineContext {
 public:
     CocoaEngineContext();
     virtual ~CocoaEngineContext();
+    
+    void initialize();
+    void free();
 
 private:
     CocoaApplicationContext m_applicationContext;

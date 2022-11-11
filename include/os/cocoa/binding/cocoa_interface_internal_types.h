@@ -1,13 +1,19 @@
 #ifndef ATG_PALACE_ENGINE_COCOA_INTERFACE_INTERNAL_TYPES_H
 #define ATG_PALACE_ENGINE_COCOA_INTERFACE_INTERNAL_TYPES_H
 
-typedef struct {
-    id delegate;
-} PalaceCocoaContext;
+namespace palace {
+namespace cocoa_interface {
 
-typedef struct {
+struct Context {
+    id delegate;
+};
+
+struct Window {
     id delegate;
     id window;
-} PalaceCocoaWindow;
+};
+
+}
+}
 
 #endif /* ATG_PALACE_ENGINE_COCOA_INTERFACE_INTERNAL_TYPES_H */

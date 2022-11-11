@@ -133,13 +133,24 @@ add_library("palace-engine" STATIC
         include/types/string.hpp
 )
 
+# temp: mac only
+find_library(COCOA_LIBRARY Cocoa)
+
+target_link_libraries(palace-engine INTERFACE
+        ${COCOA_LIBRARY})
+
 target_sources(palace-engine PRIVATE
-        src/os/cocoa/binding/cocoa_interface_context.m
+        src/os/cocoa/binding/cocoa_interface_context.mm
+        src/os/cocoa/binding/cocoa_interface_monitor.mm
+        src/os/cocoa/binding/cocoa_interface_window.mm
 
         include/os/cocoa/binding/cocoa_interface.h
         include/os/cocoa/binding/cocoa_interface_context.h
         include/os/cocoa/binding/cocoa_interface_internal_types.h
+        include/os/cocoa/binding/cocoa_interface_monitor.h
+        include/os/cocoa/binding/cocoa_interface_window.h
 )
+# end
 
 create_filter("core" "core")
 create_filter("debug" "debug")

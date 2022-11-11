@@ -1,16 +1,39 @@
 #ifndef ATG_PALACE_ENGINE_PLATFORM_DETECTION_HPP
 #define ATG_PALACE_ENGINE_PLATFORM_DETECTION_HPP
 
-#define PALACE_PLATFORM_WINDOWS 0
+// Windows
 #if defined(_WIN32) || defined(_WIN64)
-#undef PALACE_PLATFORM_WINDOWS
 #define PALACE_PLATFORM_WINDOWS 1
-
 #if defined(_CONSOLE)
 #define PALACE_PLATFORM_WINDOWS_CONSOLE_MODE 1
 #else
 #define PALACE_PLATFORM_WINDOWS_CONSOLE_MODE 0
+#endif /* defined(_CONSOLE) */
+#else
+#define PALACE_PLATFORM_WINDOWS 0
+#endif /* defined(_WIN32) || defined(_WIN64) */
+
+// MacOS
+#if defined(__APPLE__) && defined(__MACH__)
+#define PALACE_PLATFORM_MACOS 1
+#else
+#define PALACE_PLATFORM_MACOS 0
 #endif
-#endif
+
+// OS API Support
+
+// Windows API
+#if PALACE_PLATFORM_WINDOWS
+#define PALACE_SUPPORTS_WINAPI 1
+#else
+#define PALACE_SUPPORTS_WINAPI 0
+#endif /* PALACE_PLATFORM_WINDOWS */
+
+// Cocoa
+#if PALACE_PLATFORM_MACOS
+#define PALACE_SUPPORTS_COCOA 1
+#else
+#define PALACE_SUPPORTS_COCOA 0
+#endif /* PALACE_PLATFORM_MACOS */
 
 #endif /* ATG_PALACE_ENGINE_PLATFORM_DETECTION_HPP */
