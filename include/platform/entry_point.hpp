@@ -19,7 +19,7 @@ int main(int argc, char *argv[]) {
     palace::ApplicationContext::initialize<palace::ApplicationContext>(
             defaultSystemParameters);
 
-    const int returnValue = rebarMain(palace::ApplicationContext::get());
+    const int returnValue = palaceMain(palace::ApplicationContext::get());
     palace::ApplicationContext::free();
 
     return returnValue;
@@ -28,7 +28,7 @@ int main(int argc, char *argv[]) {
 int APIENTRY WINAPI WinMain(_In_ HINSTANCE hInstance,
                             _In_opt_ HINSTANCE hPrevInstance,
                             _In_ LPSTR lpCmdLine, _In_ int nCmdShow) {
-    palace::WindowsEngineContext context;
+    palace::WinApiEngineContext context;
     palace::FileLogTarget *logTarget =
             context.logger().addTarget<palace::FileLogTarget>();
     logTarget->newFile("application_log");

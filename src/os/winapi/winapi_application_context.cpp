@@ -17,7 +17,7 @@ std::string utf8Encode(const std::wstring &wstr) {
 }
 #endif
 
-palace::WindowsApplicationContext::WindowsApplicationContext()
+palace::WinApiApplicationContext::WinApiApplicationContext()
     : ApplicationContext(Platform::Windows, &m_windowServer) {
     palace_assert(PALACE_PLATFORM_WINDOWS);
 
@@ -28,9 +28,9 @@ palace::WindowsApplicationContext::WindowsApplicationContext()
 #endif
 }
 
-palace::WindowsApplicationContext::~WindowsApplicationContext() {}
+palace::WinApiApplicationContext::~WinApiApplicationContext() {}
 
-void palace::WindowsApplicationContext::initialize(const Parameters &params) {
+void palace::WinApiApplicationContext::initialize(const Parameters &params) {
     addObject(&m_windowServer);
 
     PALACE_LOG_INFO("Created window server with id=@{}", m_windowServer.id());
@@ -61,15 +61,15 @@ void palace::WindowsApplicationContext::initialize(const Parameters &params) {
 }
 
 #if PALACE_PLATFORM_WINDOWS
-HINSTANCE palace::WindowsApplicationContext::currentInstance() const {
+HINSTANCE palace::WinApiApplicationContext::currentInstance() const {
     return m_currentInstance;
 }
 
-HINSTANCE palace::WindowsApplicationContext::previousInstance() const {
+HINSTANCE palace::WinApiApplicationContext::previousInstance() const {
     return m_previousInstance;
 }
 
-int palace::WindowsApplicationContext::initialDisplayCommand() const {
+int palace::WinApiApplicationContext::initialDisplayCommand() const {
     return m_initialDisplayCommand;
 }
 #endif

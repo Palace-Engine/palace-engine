@@ -9,10 +9,10 @@
 
 namespace palace {
 
-class WindowsEngineContext : public EngineContext {
+class WinApiEngineContext : public EngineContext {
 public:
-    WindowsEngineContext();
-    virtual ~WindowsEngineContext();
+    WinApiEngineContext();
+    virtual ~WinApiEngineContext();
 
 #if PALACE_PLATFORM_WINDOWS
     void initialize(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -21,7 +21,7 @@ public:
 #endif
 
 private:
-    WindowsApplicationContext m_applicationContext;
+    WinApiApplicationContext m_applicationContext;
 };
 
 }// namespace palace

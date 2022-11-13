@@ -2,7 +2,7 @@
 
 #include "../../../include/os/winapi/winapi_window_server.hpp"
 
-palace::WindowsWindow::WindowsWindow() : Window(Platform::Windows) {
+palace::WinApiWindow::WinApiWindow() : Window(Platform::Windows) {
     m_server = nullptr;
 
 #if PALACE_PLATFORM_WINDOWS
@@ -10,17 +10,17 @@ palace::WindowsWindow::WindowsWindow() : Window(Platform::Windows) {
 #endif
 }
 
-palace::WindowsWindow::~WindowsWindow() {}
+palace::WinApiWindow::~WinApiWindow() {}
 
-size_t palace::WindowsWindow::findId() const {
+size_t palace::WinApiWindow::findId() const {
     return m_server->findIndex(this);
 }
 
-void palace::WindowsWindow::initialize(const Parameters &parameters) {
+void palace::WinApiWindow::initialize(const Parameters &parameters) {
     Window::initialize(parameters);
 }
 
-void palace::WindowsWindow::setState(State state) {
+void palace::WinApiWindow::setState(State state) {
     Window::setState(state);
 
     PALACE_LOG_INFO("State set to {}", state);
@@ -36,7 +36,7 @@ void palace::WindowsWindow::setState(State state) {
 #endif
 }
 
-void palace::WindowsWindow::setStyle(Style style) {
+void palace::WinApiWindow::setStyle(Style style) {
     switch (style) {
         case Style::Popup:
             setStylePopup();
@@ -49,7 +49,7 @@ void palace::WindowsWindow::setStyle(Style style) {
     }
 }
 
-void palace::WindowsWindow::setPosition(const math::ivec2 &position) {
+void palace::WinApiWindow::setPosition(const math::ivec2 &position) {
     PALACE_LOG_INFO("Setting window position:{}", position);
 
 #if PALACE_PLATFORM_WINDOWS
@@ -60,7 +60,7 @@ void palace::WindowsWindow::setPosition(const math::ivec2 &position) {
 #endif
 }
 
-void palace::WindowsWindow::setSize(const math::ivec2 &size) {
+void palace::WinApiWindow::setSize(const math::ivec2 &size) {
     PALACE_LOG_INFO("Setting window size: {}", size);
 
 #if PALACE_PLATFORM_WINDOWS
@@ -72,7 +72,7 @@ void palace::WindowsWindow::setSize(const math::ivec2 &size) {
 }
 
 #if PALACE_PLATFORM_WINDOWS
-UINT palace::WindowsWindow::internalToWindowsStyle(Style style) {
+UINT palace::WinApiWindow::internalToWindowsStyle(Style style) {
     switch (style) {
         case Style::Windowed:
             return WS_OVERLAPPEDWINDOW | WS_VISIBLE;
@@ -85,19 +85,19 @@ UINT palace::WindowsWindow::internalToWindowsStyle(Style style) {
     return WS_OVERLAPPED;
 }
 
-LRESULT WINAPI palace::WindowsWindow::WinProc(HWND hWnd, UINT msg,
+LRESULT WINAPI palace::WinApiWindow::WinProc(HWND hWnd, UINT msg,
                                               WPARAM wParam, LPARAM lParam) {
     const LONG_PTR userData = GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
     switch (msg) {
         case WM_CREATE: {
-            WindowsWindow *window = reinterpret_cast<WindowsWindow *>(lParam);
+            WinApiWindow *window = reinterpret_cast<WinApiWindow *>(lParam);
             return window->m_server->internalWinProc(window, msg, wParam,
                                                      lParam);
         }
     }
 
-    WindowsWindow *window = reinterpret_cast<WindowsWindow *>(userData);
+    WinApiWindow *window = reinterpret_cast<WinApiWindow *>(userData);
     if (window != nullptr) {
         return window->internalWinProc(msg, wParam, lParam);
     } else {
@@ -106,7 +106,7 @@ LRESULT WINAPI palace::WindowsWindow::WinProc(HWND hWnd, UINT msg,
     }
 }
 
-LRESULT palace::WindowsWindow::internalWinProc(UINT msg, WPARAM wParam,
+LRESULT palace::WinApiWindow::internalWinProc(UINT msg, WPARAM wParam,
                                                LPARAM lParam) {
     const char *messageName = messageTypeName(msg);
     if (messageName == nullptr) {
@@ -157,7 +157,7 @@ LRESULT palace::WindowsWindow::internalWinProc(UINT msg, WPARAM wParam,
     return DefWindowProc(m_handle, msg, wParam, lParam);
 }
 
-void palace::WindowsWindow::updatePositionAndSize() {
+void palace::WinApiWindow::updatePositionAndSize() {
     RECT rect;
     if (GetClientRect(m_handle, &rect)) {
         updateContentSizeCache(
@@ -178,7 +178,7 @@ void palace::WindowsWindow::updatePositionAndSize() {
 #define MESSAGE_NAME(name)                                                     \
     case name:                                                                 \
         return #name;
-constexpr const char *palace::WindowsWindow::messageTypeName(UINT msg) {
+constexpr const char *palace::WinApiWindow::messageTypeName(UINT msg) {
     switch (msg) {
         MESSAGE_NAME(WM_CREATE);
         MESSAGE_NAME(WM_QUIT);
@@ -199,7 +199,7 @@ constexpr const char *palace::WindowsWindow::messageTypeName(UINT msg) {
 }
 #endif
 
-void palace::WindowsWindow::setStyleWindowed() {
+void palace::WinApiWindow::setStyleWindowed() {
     Window::setStyle(Style::Windowed);
 
 #if PALACE_PLATFORM_WINDOWS
@@ -211,7 +211,7 @@ void palace::WindowsWindow::setStyleWindowed() {
 #endif
 }
 
-void palace::WindowsWindow::setStylePopup() {
+void palace::WinApiWindow::setStylePopup() {
     Window::setStyle(Style::Popup);
 
 #if PALACE_PLATFORM_WINDOWS

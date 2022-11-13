@@ -57,8 +57,9 @@ void palace::cocoa_interface::pollEvents() {
                                                 untilDate:[NSDate distantPast]
                                                    inMode:NSDefaultRunLoopMode
                                                   dequeue:YES];
-            if (event == nil)
+            if (event == nil) {
                 break;
+            }
 
             [NSApp sendEvent:event];
         }

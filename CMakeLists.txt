@@ -133,24 +133,24 @@ add_library("palace-engine" STATIC
         include/types/string.hpp
 )
 
-# temp: mac only
 find_library(COCOA_LIBRARY Cocoa)
 
-target_link_libraries(palace-engine INTERFACE
-        ${COCOA_LIBRARY})
+if(COCOA_LIBRARY)
+    target_link_libraries(palace-engine INTERFACE
+            ${COCOA_LIBRARY})
 
-target_sources(palace-engine PRIVATE
-        src/os/cocoa/binding/cocoa_interface_context.mm
-        src/os/cocoa/binding/cocoa_interface_monitor.mm
-        src/os/cocoa/binding/cocoa_interface_window.mm
+    target_sources(palace-engine PRIVATE
+            src/os/cocoa/binding/cocoa_interface_context.mm
+            src/os/cocoa/binding/cocoa_interface_monitor.mm
+            src/os/cocoa/binding/cocoa_interface_window.mm
 
-        include/os/cocoa/binding/cocoa_interface.h
-        include/os/cocoa/binding/cocoa_interface_context.h
-        include/os/cocoa/binding/cocoa_interface_internal_types.h
-        include/os/cocoa/binding/cocoa_interface_monitor.h
-        include/os/cocoa/binding/cocoa_interface_window.h
-)
-# end
+            include/os/cocoa/binding/cocoa_interface.h
+            include/os/cocoa/binding/cocoa_interface_context.h
+            include/os/cocoa/binding/cocoa_interface_internal_types.h
+            include/os/cocoa/binding/cocoa_interface_monitor.h
+            include/os/cocoa/binding/cocoa_interface_window.h
+    )
+endif()
 
 create_filter("core" "core")
 create_filter("debug" "debug")
@@ -214,23 +214,23 @@ set_property(TARGET gtest_main PROPERTY FOLDER "gtest")
 enable_testing()
 
 add_executable("palace-engine-test"
-    # Source files
-    test/dynamic_array_test.cpp
-    test/heap_allocator_test.cpp
-    test/logger_test.cpp
-    test/object_test.cpp
-    test/object_container_test.cpp
-    test/sanity_test.cpp
+        # Source files
+        test/dynamic_array_test.cpp
+        test/heap_allocator_test.cpp
+        test/logger_test.cpp
+        test/object_test.cpp
+        test/object_container_test.cpp
+        test/sanity_test.cpp
 
-    # Head files
+        # Head files
 )
 
 target_link_libraries("palace-engine-test" PRIVATE
-    gtest_main
-    palace-warnings
-    palace-definitions
-    palace-compile-options
-    palace-engine
+        gtest_main
+        palace-warnings
+        palace-definitions
+        palace-compile-options
+        palace-engine
 )
 
 include(GoogleTest)

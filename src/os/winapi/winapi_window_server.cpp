@@ -3,7 +3,7 @@
 #include "../../../include/os/winapi/winapi_application_context.hpp"
 #include "../../../include/os/winapi/winapi_display_device.hpp"
 
-palace::WindowsWindowServer::WindowsWindowServer()
+palace::WinApiWindowServer::WinApiWindowServer()
     : WindowServer(Platform::Windows, &m_windows, &m_displayDevices) {
     m_context = nullptr;
 
@@ -12,21 +12,21 @@ palace::WindowsWindowServer::WindowsWindowServer()
 #endif
 }
 
-palace::WindowsWindowServer::~WindowsWindowServer() {}
+palace::WinApiWindowServer::~WinApiWindowServer() {}
 
 #if PALACE_PLATFORM_WINDOWS
 palace::Window *
-palace::WindowsWindowServer::spawnWindow(const Window::Parameters &params) {
+palace::WinApiWindowServer::spawnWindow(const Window::Parameters &params) {
     PALACE_LOG_INFO("Spawning new window: [ title: \"{}\", style: {}, position: "
                     "{}, size: {} ]",
                     params.title,
                     params.style,
                     params.position, params.size);
 
-    WindowsWindow *parent = (params.parent != nullptr)
+    WinApiWindow *parent = (params.parent != nullptr)
                                     ? m_windows[params.parent->findId()]
                                     : nullptr;
-    const UINT style = WindowsWindow::internalToWindowsStyle(params.style);
+    const UINT style = WinApiWindow::internalToWindowsStyle(params.style);
     HWND parentHandle = (parent != nullptr) ? parent->m_handle : NULL;
     ATOM windowClass;
     if (!registerWindowsClass(&windowClass)) {
@@ -34,7 +34,7 @@ palace::WindowsWindowServer::spawnWindow(const Window::Parameters &params) {
         return nullptr;
     }
 
-    WindowsWindow *newWindow = m_windows.create();
+    WinApiWindow *newWindow = m_windows.create();
     addObject(newWindow);
     PALACE_LOG_INFO("Created new window object with id=@{}", newWindow->id());
 
@@ -80,13 +80,13 @@ failed:
     return nullptr;
 }
 
-void palace::WindowsWindowServer::updateDisplayDevices() {
+void palace::WinApiWindowServer::updateDisplayDevices() {
     WindowServer::updateDisplayDevices();
-    EnumDisplayMonitors(NULL, NULL, &WindowsWindowServer::monitorCallback,
+    EnumDisplayMonitors(NULL, NULL, &WinApiWindowServer::monitorCallback,
                         reinterpret_cast<LPARAM>(this));
 }
 
-void palace::WindowsWindowServer::processMessages() {
+void palace::WinApiWindowServer::processMessages() {
     MSG msg;
     while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
         TranslateMessage(&msg);
@@ -95,18 +95,18 @@ void palace::WindowsWindowServer::processMessages() {
 }
 
 size_t
-palace::WindowsWindowServer::findIndex(const WindowsWindow *window) const {
+palace::WinApiWindowServer::findIndex(const WinApiWindow *window) const {
     return m_windows.findFirst(window);
 }
 
-bool palace::WindowsWindowServer::registerWindowsClass(ATOM *windowClass) {
+bool palace::WinApiWindowServer::registerWindowsClass(ATOM *windowClass) {
     const std::string windowClassName =
             "PalaceWindowClass_" + std::to_string(m_windowClasses++);
 
     WNDCLASSEX wc;
     wc.cbSize = sizeof(WNDCLASSEX);
     wc.style = CS_HREDRAW | CS_VREDRAW;
-    wc.lpfnWndProc = WindowsWindow::WinProc;
+    wc.lpfnWndProc = WinApiWindow::WinProc;
     wc.cbClsExtra = 0;
     wc.cbWndExtra = 0;
     wc.hInstance = m_context->currentInstance();
@@ -126,7 +126,7 @@ bool palace::WindowsWindowServer::registerWindowsClass(ATOM *windowClass) {
     }
 }
 
-BOOL CALLBACK palace::WindowsWindowServer::monitorCallback(HMONITOR hMonitor,
+BOOL CALLBACK palace::WinApiWindowServer::monitorCallback(HMONITOR hMonitor,
                                                            HDC /* hdcMonitor */,
                                                            LPRECT lprcMonitor,
                                                            LPARAM dwData) {
@@ -134,9 +134,9 @@ BOOL CALLBACK palace::WindowsWindowServer::monitorCallback(HMONITOR hMonitor,
     info.cbSize = sizeof(MONITORINFOEX);
     GetMonitorInfo(hMonitor, &info);
 
-    WindowsWindowServer *windowServer =
-            reinterpret_cast<palace::WindowsWindowServer *>(dwData);
-    WindowsDisplayDevice *monitor =
+    WinApiWindowServer *windowServer =
+            reinterpret_cast<palace::WinApiWindowServer *>(dwData);
+    WinApiDisplayDevice *monitor =
             windowServer->findDisplayDevice(info.szDevice);
 
     if (monitor == nullptr) {
@@ -159,26 +159,26 @@ BOOL CALLBACK palace::WindowsWindowServer::monitorCallback(HMONITOR hMonitor,
     return TRUE;
 }
 
-LRESULT palace::WindowsWindowServer::internalWinProc(WindowsWindow *window,
+LRESULT palace::WinApiWindowServer::internalWinProc(WinApiWindow *window,
                                                      UINT msg, WPARAM wParam,
                                                      LPARAM lParam) {
     return DefWindowProc(window->m_handle, msg, wParam, lParam);
 }
 #else
 palace::Window *
-palace::WindowsWindowServer::spawnWindow(const Window::Parameters &) {
+palace::WinApiWindowServer::spawnWindow(const Window::Parameters &) {
     return nullptr;
 }
 
-void palace::WindowsWindowServer::updateDisplayDevices() {}
-void palace::WindowsWindowServer::processMessages() {}
+void palace::WinApiWindowServer::updateDisplayDevices() {}
+void palace::WinApiWindowServer::processMessages() {}
 #endif
 
-palace::WindowsDisplayDevice *
-palace::WindowsWindowServer::findDisplayDevice(const string &deviceName) const {
+palace::WinApiDisplayDevice *
+palace::WinApiWindowServer::findDisplayDevice(const string &deviceName) const {
     const size_t n = m_displayDevices.size();
     for (size_t i = 0; i < n; ++i) {
-        WindowsDisplayDevice *displayDevice = m_displayDevices[i];
+        WinApiDisplayDevice *displayDevice = m_displayDevices[i];
         if (displayDevice->deviceName() == deviceName) { return displayDevice; }
     }
 

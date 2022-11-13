@@ -9,12 +9,12 @@
 
 namespace palace {
 
-class WindowsEngineContext;
-class WindowsApplicationContext : public ApplicationContext {
-    PALACE_OBJECT_DATA(WindowsApplicationContext, ApplicationContext,
+class WinApiEngineContext;
+class WinApiApplicationContext : public ApplicationContext {
+    PALACE_OBJECT_DATA(WinApiApplicationContext, ApplicationContext,
                        "Application-level context for Windows applications.")
 
-    friend WindowsEngineContext;
+    friend WinApiEngineContext;
 
 public:
 #if PALACE_PLATFORM_WINDOWS
@@ -29,8 +29,8 @@ public:
 #endif
 
 public:
-    WindowsApplicationContext();
-    virtual ~WindowsApplicationContext() override;
+    WinApiApplicationContext();
+    virtual ~WinApiApplicationContext() override;
 
     void initialize(const Parameters &params);
 
@@ -48,7 +48,7 @@ private:
     int m_initialDisplayCommand;
 #endif
 
-    WindowsWindowServer m_windowServer;
+    WinApiWindowServer m_windowServer;
 };
 
 }// namespace palace

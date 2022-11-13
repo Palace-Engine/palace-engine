@@ -38,6 +38,6 @@ private:
     ObjectContainer<DisplayDevice, CocoaDisplayDevice> m_displayDevices;
 };
 
-}// namespace rebar
+}// namespace palace
 
 #endif /* ATG_PALACE_ENGINE_COCOA_WINDOW_SERVER_HPP */

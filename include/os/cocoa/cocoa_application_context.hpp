@@ -13,19 +13,22 @@ class CocoaEngineContext;
 class CocoaApplicationContext : public ApplicationContext {
     PALACE_OBJECT_DATA(CocoaApplicationContext, ApplicationContext,
                        "Application-level context for MacOS applications.")
-    
+
     friend CocoaEngineContext;
-    
+
 public:
     CocoaApplicationContext();
     virtual ~CocoaApplicationContext();
-    
+
     void initialize();
     void free();
-    
+
 private:
     CocoaWindowServer m_windowServer;
+
+#if PALACE_SUPPORTS_COCOA
     cocoa_interface::ContextHandle m_context;
+#endif
 };
 
 }// namespace palace

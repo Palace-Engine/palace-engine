@@ -7,17 +7,17 @@
 
 namespace palace {
 
-class WindowsWindowServer;
+class WinApiWindowServer;
 
-class WindowsWindow : public Window {
-    PALACE_OBJECT_DATA(WindowsWindow, Window,
+class WinApiWindow : public Window {
+    PALACE_OBJECT_DATA(WinApiWindow, Window,
                        "Display device type for Windows OSs.")
 
-    friend WindowsWindowServer;
+    friend WinApiWindowServer;
 
 public:
-    WindowsWindow();
-    virtual ~WindowsWindow() override;
+    WinApiWindow();
+    virtual ~WinApiWindow() override;
 
     virtual void setState(State state) override;
     virtual void setStyle(Style style) override;
@@ -44,7 +44,7 @@ private:
     void setStylePopup();
 
 private:
-    WindowsWindowServer *m_server;
+    WinApiWindowServer *m_server;
 
 #if PALACE_PLATFORM_WINDOWS
     HWND m_handle;

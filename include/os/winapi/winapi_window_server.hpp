@@ -10,26 +10,26 @@
 
 namespace palace {
 
-class WindowsApplicationContext;
-class WindowsWindowServer : public WindowServer {
-    PALACE_OBJECT_DATA(WindowsWindowServer, WindowServer,
+class WinApiApplicationContext;
+class WinApiWindowServer : public WindowServer {
+    PALACE_OBJECT_DATA(WinApiWindowServer, WindowServer,
                        "Window server for Windows OSs.")
 
-    friend WindowsApplicationContext;
+    friend WinApiApplicationContext;
 
 public:
-    WindowsWindowServer();
-    virtual ~WindowsWindowServer();
+    WinApiWindowServer();
+    virtual ~WinApiWindowServer();
 
     virtual Window *spawnWindow(const Window::Parameters &params) override;
     virtual void updateDisplayDevices() override;
     virtual void processMessages() override;
 
 public:
-    size_t findIndex(const WindowsWindow *window) const;
+    size_t findIndex(const WinApiWindow *window) const;
 
 #if PALACE_PLATFORM_WINDOWS
-    LRESULT internalWinProc(WindowsWindow *window, UINT msg, WPARAM wParam,
+    LRESULT internalWinProc(WinApiWindow *window, UINT msg, WPARAM wParam,
                             LPARAM lParam);
 #endif
 
@@ -37,7 +37,7 @@ private:
 #if PALACE_PLATFORM_WINDOWS
     bool registerWindowsClass(ATOM *windowClass);
     struct MonitorCallBackContext {
-        WindowsWindowServer *windowServer;
+        WinApiWindowServer *windowServer;
     };
 
     static BOOL CALLBACK monitorCallback(HMONITOR hMonitor, HDC hdcMonitor,
@@ -46,15 +46,15 @@ private:
 #endif
 
 private:
-    void setContext(WindowsApplicationContext *context) { m_context = context; }
-    WindowsDisplayDevice *findDisplayDevice(const string &deviceName) const;
+    void setContext(WinApiApplicationContext *context) { m_context = context; }
+    WinApiDisplayDevice *findDisplayDevice(const string &deviceName) const;
 
 private:
-    WindowsApplicationContext *m_context;
-    ObjectContainer<Window, WindowsWindow> m_windows;
-    ObjectContainer<DisplayDevice, WindowsDisplayDevice> m_displayDevices;
+    WinApiApplicationContext *m_context;
+    ObjectContainer<Window, WinApiWindow> m_windows;
+    ObjectContainer<DisplayDevice, WinApiDisplayDevice> m_displayDevices;
 };
 
-}// namespace rebar
+}// namespace palace
 
 #endif /* ATG_PALACE_ENGINE_WINDOWS_WINDOW_SERVER_HPP */

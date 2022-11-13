@@ -1,6 +1,6 @@
 #include "../../../include/os/winapi/winapi_display_device.hpp"
 
-palace::WindowsDisplayDevice::WindowsDisplayDevice()
+palace::WinApiDisplayDevice::WinApiDisplayDevice()
     : DisplayDevice(Platform::Windows) {}
 
-palace::WindowsDisplayDevice::~WindowsDisplayDevice() {}
+palace::WinApiDisplayDevice::~WinApiDisplayDevice() {}

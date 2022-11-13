@@ -5,16 +5,16 @@
 
 namespace palace {
 
-class WindowsWindowServer;
-class WindowsDisplayDevice : public DisplayDevice {
-    PALACE_OBJECT_DATA(WindowsDisplayDevice, DisplayDevice,
+class WinApiWindowServer;
+class WinApiDisplayDevice : public DisplayDevice {
+    PALACE_OBJECT_DATA(WinApiDisplayDevice, DisplayDevice,
                        "Display device type for Windows OSs.")
 
-    friend WindowsWindowServer;
+    friend WinApiWindowServer;
 
 public:
-    WindowsDisplayDevice();
-    virtual ~WindowsDisplayDevice() override;
+    WinApiDisplayDevice();
+    virtual ~WinApiDisplayDevice() override;
 };
 
 }// namespace palace
