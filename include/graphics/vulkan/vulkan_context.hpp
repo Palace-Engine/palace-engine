@@ -14,15 +14,21 @@ class VulkanContext : public GraphicsContext {
 
 public:
     struct Parameters {
-        GraphicsContext::Parameters
-            baseParameters;
+        GraphicsContext::Parameters baseParameters;
         VulkanVersion version;
     };
+
+#if PALACE_SUPPORTS_VULKAN
+    struct DeviceInfo {
+        VkPhysicalDevice vulkanHandle;
+        VkPhysicalDeviceProperties properties;
+    };
+#endif
 
 public:
     virtual ~VulkanContext() override;
 
-    virtual void queryDevices() override;
+    virtual void enumerateDevices() override;
     virtual size_t deviceCount() override;
     virtual string deviceName(size_t i) override;
 
@@ -36,11 +42,13 @@ protected:
     VulkanContext(Platform platform);
 
     Result initialize(const Parameters &parameters);
-    virtual void getRequiredExtensions(DynamicArray<const char *> &extensions) = 0;
+    virtual void
+    getRequiredExtensions(DynamicArray<const char *> &extensions) = 0;
 
 protected:
 #if PALACE_SUPPORTS_VULKAN
     VkInstance m_instance;
+    DynamicArray<DeviceInfo> m_physicalDevices;
 #endif
 };
 

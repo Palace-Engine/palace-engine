@@ -22,7 +22,7 @@ public:
 
     Result initialize(const Parameters &parameters) { return Result::Success; }
 
-    virtual void queryDevices() = 0;
+    virtual void enumerateDevices() = 0;
     virtual size_t deviceCount() = 0;
     virtual string deviceName(size_t i) = 0;
 

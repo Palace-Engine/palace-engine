@@ -56,7 +56,35 @@ palace::Result palace::VulkanContext::initialize(const Parameters &parameters) {
 #endif
 }
 
-void palace::VulkanContext::queryDevices() {}
+void palace::VulkanContext::enumerateDevices() {
+#if PALACE_SUPPORTS_VULKAN
+    VkResult result;
+
+    uint32_t deviceCount;
+    result = vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
+    if (result != VkResult::VK_SUCCESS) {
+        PALACE_LOG_ERROR("vkEnumeratePhysicalDevices failed with error: {}",
+                         result);
+        return;
+    }
+
+    DynamicArray<VkPhysicalDevice> devices;
+    devices.resize(static_cast<size_t>(deviceCount));
+    result = vkEnumeratePhysicalDevices(m_instance, &deviceCount,
+                                        devices.writeable());
+    if (result != VkResult::VK_SUCCESS) {
+        PALACE_LOG_ERROR("vkEnumeratePhysicalDevices failed with error: {}",
+                         result);
+        return;
+    }
+
+    VkPhysicalDeviceProperties deviceProperties;
+    m_physicalDevices.resize(static_cast<size_t>(deviceCount));
+    for (size_t i = 0; i < static_cast<size_t>(deviceCount); ++i) {
+        vkGetPhysicalDeviceProperties(devices[i], &m_physicalDevices[i].properties);
+    }
+#endif
+}
 
 size_t palace::VulkanContext::deviceCount() { return 0; }
 

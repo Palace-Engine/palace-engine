@@ -44,6 +44,7 @@ public:
     }
 
     const T_Data *data() const { return m_data; }
+    T_Data *writeable() const { return m_data; }
 
     template<class... T_Initializer>
     const T_Data &emplace(T_Initializer &&...args) {
