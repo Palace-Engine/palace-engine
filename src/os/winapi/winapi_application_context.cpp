@@ -1,5 +1,7 @@
 #include "../../../include/os/winapi/winapi_application_context.hpp"
 
+#include "../../../include/graphics/vulkan/vulkan_winapi_context.hpp"
+
 #include <codecvt>
 #include <locale>
 
@@ -58,6 +60,26 @@ void palace::WinApiApplicationContext::initialize(const Parameters &params) {
 #else
     palace::ApplicationContext::initialize(params);
 #endif
+}
+
+palace::GraphicsContext *palace::WinApiApplicationContext::createVulkanContext(
+        const VulkanVersion &version) {
+    VulkanWinApiContext *newContext =
+            graphicsContexts().create<VulkanWinApiContext>();
+    addObject(static_cast<GraphicsContext *>(newContext));
+    VulkanWinApiContext::Parameters parameters = {
+            .baseParameters = {.baseParameters = {}},
+            .windowServer = &m_windowServer
+    };
+    Result result = newContext->initialize(parameters);
+    if (!isSuccessful(result)) {
+        PALACE_LOG_ERROR("Vulkan context creation failed");
+        graphicsContexts().free(static_cast<GraphicsContext *>(newContext));
+        return nullptr;
+    }
+
+    PALACE_LOG_INFO("Vulkan context creation succeeded: id=@{}", newContext->id());
+    return static_cast<palace::GraphicsContext *>(newContext);
 }
 
 #if PALACE_PLATFORM_WINDOWS

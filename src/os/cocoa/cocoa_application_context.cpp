@@ -20,3 +20,8 @@ void palace::CocoaApplicationContext::free() {
     cocoa_interface::freeContext(m_context);
 #endif
 }
+
+palace::GraphicsContext *palace::CocoaApplicationContext::createVulkanContext(
+        const VulkanVersion &version) {
+    return nullptr;
+}

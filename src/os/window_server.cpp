@@ -24,7 +24,7 @@ void palace::WindowServer::free() {
 }
 
 void palace::WindowServer::freeWindow(Window *&window) {
-    m_windows->free(window);
+    m_windows->freeBase(window);
     window = nullptr;
 }
 
@@ -50,7 +50,7 @@ void palace::WindowServer::freeAllWindows() {
 }
 
 void palace::WindowServer::freeDisplayDevice(DisplayDevice *&device) {
-    m_displayDevices->free(device);
+    m_displayDevices->freeBase(device);
     device = nullptr;
 }
 

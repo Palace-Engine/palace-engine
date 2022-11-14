@@ -34,6 +34,10 @@ public:
 
     void initialize(const Parameters &params);
 
+    virtual GraphicsContext *
+    createVulkanContext(const VulkanVersion &version) override;
+    WinApiWindowServer &windowServer() { return m_windowServer; }
+
 public:
 #if PALACE_PLATFORM_WINDOWS
     HINSTANCE currentInstance() const;

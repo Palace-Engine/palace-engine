@@ -17,15 +17,14 @@ palace::WinApiWindowServer::~WinApiWindowServer() {}
 #if PALACE_PLATFORM_WINDOWS
 palace::Window *
 palace::WinApiWindowServer::spawnWindow(const Window::Parameters &params) {
-    PALACE_LOG_INFO("Spawning new window: [ title: \"{}\", style: {}, position: "
-                    "{}, size: {} ]",
-                    params.title,
-                    params.style,
-                    params.position, params.size);
+    PALACE_LOG_INFO(
+            "Spawning new window: [ title: \"{}\", style: {}, position: "
+            "{}, size: {} ]",
+            params.title, params.style, params.position, params.size);
 
     WinApiWindow *parent = (params.parent != nullptr)
-                                    ? m_windows[params.parent->findId()]
-                                    : nullptr;
+                                   ? m_windows[params.parent->findId()]
+                                   : nullptr;
     const UINT style = WinApiWindow::internalToWindowsStyle(params.style);
     HWND parentHandle = (parent != nullptr) ? parent->m_handle : NULL;
     ATOM windowClass;
@@ -94,8 +93,19 @@ void palace::WinApiWindowServer::processMessages() {
     }
 }
 
-size_t
-palace::WinApiWindowServer::findIndex(const WinApiWindow *window) const {
+palace::WinApiWindow *
+palace::WinApiWindowServer::winApiWindow(Window *window) const {
+    const size_t n = m_windows.size();
+    for (size_t i = 0; i < n; ++i) {
+        if (static_cast<Window *>(m_windows[i]) == window) {
+            return m_windows[i];
+        }
+    }
+
+    return nullptr;
+}
+
+size_t palace::WinApiWindowServer::findIndex(const WinApiWindow *window) const {
     return m_windows.findFirst(window);
 }
 
@@ -127,9 +137,9 @@ bool palace::WinApiWindowServer::registerWindowsClass(ATOM *windowClass) {
 }
 
 BOOL CALLBACK palace::WinApiWindowServer::monitorCallback(HMONITOR hMonitor,
-                                                           HDC /* hdcMonitor */,
-                                                           LPRECT lprcMonitor,
-                                                           LPARAM dwData) {
+                                                          HDC /* hdcMonitor */,
+                                                          LPRECT lprcMonitor,
+                                                          LPARAM dwData) {
     MONITORINFOEX info;
     info.cbSize = sizeof(MONITORINFOEX);
     GetMonitorInfo(hMonitor, &info);
@@ -160,8 +170,8 @@ BOOL CALLBACK palace::WinApiWindowServer::monitorCallback(HMONITOR hMonitor,
 }
 
 LRESULT palace::WinApiWindowServer::internalWinProc(WinApiWindow *window,
-                                                     UINT msg, WPARAM wParam,
-                                                     LPARAM lParam) {
+                                                    UINT msg, WPARAM wParam,
+                                                    LPARAM lParam) {
     return DefWindowProc(window->m_handle, msg, wParam, lParam);
 }
 #else

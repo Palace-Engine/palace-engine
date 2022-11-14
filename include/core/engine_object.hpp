@@ -2,25 +2,14 @@
 #define ATG_PALACE_ENGINE_ENGINE_OBJECT_HPP
 
 #include "engine_context.hpp"
+#include "result.hpp"
 
 #include <sstream>
 
 namespace palace {
 
+// Temp
 #define PALACE_ENGINE_LOG_LEVEL PALACE_ENGINE_LOG_LEVEL_DEBUG
-
-/*
-#define OBJECT_LOG_FUNCTION(name, level)                                       \
-    template<typename... Args>                                                 \
-    void name(std::string_view format, std::string_view objectName,            \
-              std::string_view function, int line, Args... args) {             \
-        std::stringstream ss;                                                  \
-        ss << objectName << "("                                                \
-           << "id=@" << id() << ")::" << function << "::L" << line << " | "    \
-           << format;                                                          \
-        logger().name(ss.str(), args...);                                      \
-    }
-    */
 
 #define PALACE_OBJECT_LOG(level, format_string, ...)                           \
     {                                                                          \

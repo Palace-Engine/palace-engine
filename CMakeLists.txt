@@ -64,12 +64,16 @@ set_property(TARGET atg-math-test PROPERTY FOLDER "math")
 # -----------------------------------------------------------------------------
 # Source files
 # -----------------------------------------------------------------------------
-add_library("palace-engine" STATIC
+add_library(palace-engine-base STATIC
         # Source files
         src/core/dynamic_array.cpp
         src/core/engine_context.cpp
         src/core/engine_object.cpp
         src/core/object_container.cpp
+        src/graphics/graphics_api_object.cpp
+        src/graphics/graphics_context.cpp
+        src/graphics/vulkan/vulkan_context.cpp
+        src/graphics/vulkan/vulkan_winapi_context.cpp
         src/memory/default_allocator.cpp
         src/logging/log_target.cpp
         src/logging/logger.cpp
@@ -97,14 +101,25 @@ add_library("palace-engine" STATIC
         include/core/engine_object.hpp
         include/core/object.hpp
         include/core/object_container.hpp
+        include/core/result.hpp
         include/debug/assert.hpp
         include/formatting/formatters.hpp
         include/formatting/formatting.hpp
+        include/graphics/graphics_api.hpp
+        include/graphics/graphics_api_object.hpp
+        include/graphics/graphics_context.hpp
+        include/graphics/graphics_support.hpp
+        include/graphics/vulkan/vulkan_context.hpp
+        include/graphics/vulkan/vulkan_formatters.hpp
+        include/graphics/vulkan/vulkan_includes.hpp
+        include/graphics/vulkan/vulkan_version.hpp
+        include/graphics/vulkan/vulkan_winapi_context.hpp
         include/logging/log_level.hpp
         include/logging/log_target.hpp
         include/logging/logger.hpp
         include/logging/targets/file_log_target.hpp
         include/math/math.hpp
+        include/math/math_formatters.hpp
         include/memory/alloc.hpp
         include/memory/default_allocator.hpp
         include/memory/heap_allocator.hpp
@@ -133,13 +148,20 @@ add_library("palace-engine" STATIC
         include/types/string.hpp
 )
 
-find_library(COCOA_LIBRARY Cocoa)
+find_package(Vulkan)
+if (Vulkan_FOUND)
+    target_compile_definitions(palace-definitions INTERFACE PALACE_CMAKE_VULKAN_DEPENDENCY_FOUND)
 
+    target_link_libraries(palace-engine-base INTERFACE ${Vulkan_LIBRARIES})
+    target_include_directories(palace-engine-base PRIVATE ${Vulkan_INCLUDE_DIR})
+endif()
+
+find_library(COCOA_LIBRARY Cocoa)
 if(COCOA_LIBRARY)
-    target_link_libraries(palace-engine INTERFACE
+    target_link_libraries(palace-engine-base INTERFACE
             ${COCOA_LIBRARY})
 
-    target_sources(palace-engine PRIVATE
+    target_sources(palace-engine-base PRIVATE
             src/os/cocoa/binding/cocoa_interface_context.mm
             src/os/cocoa/binding/cocoa_interface_monitor.mm
             src/os/cocoa/binding/cocoa_interface_window.mm
@@ -155,6 +177,8 @@ endif()
 create_filter("core" "core")
 create_filter("debug" "debug")
 create_filter("formatting" "formatting")
+create_filter("graphics" "graphics")
+create_filter("graphics\\vulkan" "graphics/vulkan")
 create_filter("info" "info")
 create_filter("logging" "logging")
 create_filter("logging\\targets" "logging/targets")
@@ -186,7 +210,7 @@ add_library(fmt STATIC
 # -----------------------------------------------------------------------------
 # Libraries
 # -----------------------------------------------------------------------------
-target_link_libraries("palace-engine" PRIVATE
+target_link_libraries(palace-engine-base PRIVATE
         palace-warnings
         palace-definitions
         palace-compile-options
@@ -213,7 +237,7 @@ set_property(TARGET gtest_main PROPERTY FOLDER "gtest")
 
 enable_testing()
 
-add_executable("palace-engine-test"
+add_executable(palace-engine-test
         # Source files
         test/dynamic_array_test.cpp
         test/heap_allocator_test.cpp
@@ -225,13 +249,13 @@ add_executable("palace-engine-test"
         # Head files
 )
 
-target_link_libraries("palace-engine-test" PRIVATE
+target_link_libraries(palace-engine-test PRIVATE
         gtest_main
         palace-warnings
         palace-definitions
         palace-compile-options
-        palace-engine
+        palace-engine-base
 )
 
 include(GoogleTest)
-gtest_discover_tests("palace-engine-test")
+gtest_discover_tests(palace-engine-test)

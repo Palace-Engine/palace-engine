@@ -43,6 +43,8 @@ public:
         return m_data[m_size++] = data;
     }
 
+    const T_Data *data() const { return m_data; }
+
     template<class... T_Initializer>
     const T_Data &emplace(T_Initializer &&...args) {
         palace_assert(m_size < m_capacity, "Insufficient capacity");

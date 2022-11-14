@@ -4,6 +4,8 @@
 #include "../platform/platform_object.hpp"
 
 #include "../core/dynamic_array.hpp"
+#include "../graphics/graphics_context.hpp"
+#include "../graphics/vulkan/vulkan_version.hpp"
 #include "../types/string.hpp"
 #include "window_server.hpp"
 
@@ -14,6 +16,8 @@ class ApplicationContext : public PlatformObject {
                        "Application-level context.")
 
     friend EngineContext;
+    using GraphicsContextContainer =
+            ObjectContainer<GraphicsContext, GraphicsContext>;
 
 public:
     struct DefaultParameters {
@@ -21,8 +25,10 @@ public:
         char ***argv;
     };
 
+protected:
+    ApplicationContext(Platform platform, WindowServer *windowServer);
+
 public:
-    ApplicationContext();
     virtual ~ApplicationContext();
 
     void free();
@@ -32,15 +38,21 @@ public:
     inline string commandLineArgument(size_t i) const;
     inline size_t commandLineArgumentCount() const;
 
-protected:
-    ApplicationContext(Platform platform, WindowServer *windowServer);
+    VulkanVersion highestSupportedVulkanVersion() const;
+    virtual GraphicsContext *
+    createVulkanContext(const VulkanVersion &version) = 0;
+
     void initialize(const DefaultParameters &params);
     void addCommandLineArgument(const string &s);
     virtual void internalFree();
 
+protected:
+    GraphicsContextContainer &graphicsContexts() { return m_graphicsContexts; }
+
 private:
     DynamicArray<string> m_commandLineArguments;
     WindowServer *m_windowServer;
+    GraphicsContextContainer m_graphicsContexts;
 };
 
 size_t ApplicationContext::commandLineArgumentCount() const {

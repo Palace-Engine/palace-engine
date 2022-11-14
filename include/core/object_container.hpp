@@ -28,7 +28,7 @@ public:
     virtual size_t size() const = 0;
     virtual T_Base *get(size_t i) const = 0;
     virtual void free(size_t i) = 0;
-    virtual void free(T_Base *object) = 0;
+    virtual void freeBase(T_Base *object) = 0;
     virtual void free() = 0;
     inline T_Base *operator[](size_t i) const { return get(i); }
 };
@@ -52,7 +52,7 @@ public:
         m_allocator->palace_aligned_free(m_array[i]);
         m_array.fastRemove(i);
     }
-    virtual inline void free(T_Base *object) override {
+    virtual inline void freeBase(T_Base *object) override {
         free(findFirstBase(object));
     }
     inline void free(T_Object *object) { free(findFirst(object)); }

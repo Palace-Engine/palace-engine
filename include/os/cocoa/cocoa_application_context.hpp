@@ -23,6 +23,9 @@ public:
     void initialize();
     void free();
 
+    virtual GraphicsContext *
+    createVulkanContext(const VulkanVersion &version) override;
+
 private:
     CocoaWindowServer m_windowServer;
 

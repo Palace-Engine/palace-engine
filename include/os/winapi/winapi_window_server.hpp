@@ -26,6 +26,7 @@ public:
     virtual void processMessages() override;
 
 public:
+    WinApiWindow *winApiWindow(Window *window) const;
     size_t findIndex(const WinApiWindow *window) const;
 
 #if PALACE_PLATFORM_WINDOWS

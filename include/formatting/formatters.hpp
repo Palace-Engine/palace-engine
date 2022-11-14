@@ -3,17 +3,6 @@
 
 #include "formatting.hpp"
 
-#include "../math/math.hpp"
-
-template<class CharT>
-struct palace::format::formatter<palace::math::ivec2, CharT>
-    : palace::format::formatter<int, CharT> {
-    template<typename FormatContext>
-    auto format(const palace::math::ivec2 &v, FormatContext &ctx) {
-        return format_to(ctx.out(), "[{}, {}]", v.x(), v.y());
-    }
-};
-
 #define PALACE_ENUM_FORMATTER_BEGIN(namespace_name, enum_name)                 \
     template<class CharT>                                                      \
     struct palace::format::formatter<namespace_name::enum_name, CharT>         \
