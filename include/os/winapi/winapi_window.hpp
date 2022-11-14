@@ -11,7 +11,7 @@ class WinApiWindowServer;
 
 class WinApiWindow : public Window {
     PALACE_OBJECT_DATA(WinApiWindow, Window,
-                       "Display device type for Windows OSs.")
+                       "Display device type for Windows OSs.");
 
     friend WinApiWindowServer;
 

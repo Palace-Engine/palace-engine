@@ -12,7 +12,7 @@ namespace palace {
 class WindowServer : public PlatformObject {
     PALACE_OBJECT_DATA(WindowServer, PlatformObject,
                        "Base type for window servers which create and manage "
-                       "native windows and query the OS for display devices.")
+                       "native windows and query the OS for display devices.");
 
     using WindowContainer = BaseObjectContainer<Window>;
     using DisplayDeviceContainer = BaseObjectContainer<DisplayDevice>;

@@ -9,8 +9,9 @@
 namespace palace {
 
 class VulkanContext : public GraphicsContext {
-    PALACE_OBJECT_DATA(VulkanContext, GraphicsApiObject,
-                       "Top level Vulkan API context.")
+    PALACE_OBJECT_DATA(VulkanContext, GraphicsContext,
+                       "Top level Vulkan API context.");
+
 public:
     struct Parameters {
         GraphicsContext::Parameters

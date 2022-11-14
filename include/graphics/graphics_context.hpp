@@ -10,7 +10,8 @@ namespace palace {
 
 class GraphicsContext : public GraphicsApiObject {
     PALACE_OBJECT_DATA(GraphicsContext, GraphicsApiObject,
-                       "Top level graphics API context.")
+                       "Top level graphics API context.");
+
 public:
     struct Parameters {};
 

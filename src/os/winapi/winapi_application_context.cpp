@@ -1,6 +1,7 @@
 #include "../../../include/os/winapi/winapi_application_context.hpp"
 
 #include "../../../include/graphics/vulkan/vulkan_winapi_context.hpp"
+#include "../../../include/graphics/vulkan/vulkan_formatters.hpp"
 
 #include <codecvt>
 #include <locale>
@@ -64,6 +65,9 @@ void palace::WinApiApplicationContext::initialize(const Parameters &params) {
 
 palace::GraphicsContext *palace::WinApiApplicationContext::createVulkanContext(
         const VulkanVersion &version) {
+    PALACE_LOG_INFO("Creating a new Vulkan context with API version: {}",
+                    version);
+
     VulkanWinApiContext *newContext =
             graphicsContexts().create<VulkanWinApiContext>();
     addObject(static_cast<GraphicsContext *>(newContext));

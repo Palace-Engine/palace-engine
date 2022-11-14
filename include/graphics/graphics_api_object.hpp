@@ -11,7 +11,7 @@ namespace palace {
 
 class GraphicsApiObject : public EngineObject {
     PALACE_OBJECT_DATA(GraphicsApiObject, EngineObject,
-                       "Base object for creating graphics API objects.")
+                       "Base object for creating graphics API objects.");
 
 public:
     virtual ~GraphicsApiObject() override;

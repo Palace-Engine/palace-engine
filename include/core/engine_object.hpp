@@ -70,14 +70,18 @@ namespace palace {
 #define PALACE_LOG_TRACE_OPT PALACE_LOG_NO_OP
 #endif
 
+// Final semicolon missing to avoid compiler warnings when it's added after the
+// macro. It's desirable to manually type the semicolon because it avoids issues
+// with MSVC's intellisense parser which seems to encounter issues when it's
+// missing.
 #define PALACE_OBJECT_DATA(object, parent_class, description)                  \
 public:                                                                        \
     static constexpr const char *s_objectName = #object;                       \
     static constexpr const char *s_parentObjectName = #parent_class;           \
-    static constexpr const char *s_description = description;
+    static constexpr const char *s_description = description
 
 class EngineObject {
-    PALACE_OBJECT_DATA(EngineObject, , "Base object type.")
+    PALACE_OBJECT_DATA(EngineObject, , "Base object type.");
 
     friend EngineContext;
 

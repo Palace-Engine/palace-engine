@@ -11,8 +11,7 @@ class WindowEventHandler;
 class WindowServer;
 
 class Window : public PlatformObject {
-    PALACE_OBJECT_DATA(Window, PlatformObject,
-                       "Base type for native windows.")
+    PALACE_OBJECT_DATA(Window, PlatformObject, "Base type for native windows.");
 
     friend WindowServer;
 

@@ -3,6 +3,17 @@
 
 #include "../graphics_support.hpp"
 #include "vulkan_includes.hpp"
+#include "vulkan_version.hpp"
+
+template<class CharT>
+struct palace::format::formatter<palace::VulkanVersion, CharT>
+    : palace::format::formatter<int, CharT> {
+    template<typename FormatContext>
+    auto format(const palace::VulkanVersion &v, FormatContext &ctx) {
+        return format_to(ctx.out(), "[{}.{}.{}.{}]", v.variant, v.major,
+                         v.minor, v.patch);
+    }
+};
 
 #if PALACE_SUPPORTS_VULKAN
 // VkResult Formatter

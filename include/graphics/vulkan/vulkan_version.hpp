@@ -1,8 +1,6 @@
 #ifndef ATG_PALACE_ENGINE_VULKAN_VERSION_HPP
 #define ATG_PALACE_ENGINE_VULKAN_VERSION_HPP
 
-#include <cstdint>
-
 namespace palace {
 
 struct VulkanVersion {

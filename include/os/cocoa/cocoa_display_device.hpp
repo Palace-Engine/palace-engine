@@ -8,7 +8,7 @@ namespace palace {
 class CocoaWindowServer;
 class CocoaDisplayDevice : public DisplayDevice {
     PALACE_OBJECT_DATA(CocoaDisplayDevice, DisplayDevice,
-                       "Display device type for MacOS.")
+                       "Display device type for MacOS.");
 
     friend CocoaWindowServer;
 

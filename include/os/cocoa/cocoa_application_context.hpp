@@ -12,7 +12,7 @@ namespace palace {
 class CocoaEngineContext;
 class CocoaApplicationContext : public ApplicationContext {
     PALACE_OBJECT_DATA(CocoaApplicationContext, ApplicationContext,
-                       "Application-level context for MacOS applications.")
+                       "Application-level context for MacOS applications.");
 
     friend CocoaEngineContext;
 

@@ -13,7 +13,7 @@ namespace palace {
 class CocoaApplicationContext;
 class CocoaWindowServer : public WindowServer {
     PALACE_OBJECT_DATA(MacOsWindowServer, WindowServer,
-                       "Window server for MacOS.")
+                       "Window server for MacOS.");
 
     friend CocoaApplicationContext;
 

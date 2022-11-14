@@ -12,7 +12,7 @@ namespace palace {
 class WinApiEngineContext;
 class WinApiApplicationContext : public ApplicationContext {
     PALACE_OBJECT_DATA(WinApiApplicationContext, ApplicationContext,
-                       "Application-level context for Windows applications.")
+                       "Application-level context for Windows applications.");
 
     friend WinApiEngineContext;
 

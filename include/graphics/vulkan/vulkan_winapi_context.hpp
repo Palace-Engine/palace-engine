@@ -1,5 +1,5 @@
-#ifndef ATG_PALACE_ENGINE_WINAPI_CONTEXT_HPP
-#define ATG_PALACE_ENGINE_WINAPI_CONTEXT_HPP
+#ifndef ATG_PALACE_ENGINE_VULKAN_WINAPI_CONTEXT_HPP
+#define ATG_PALACE_ENGINE_VULKAN_WINAPI_CONTEXT_HPP
 
 #include "vulkan_context.hpp"
 
@@ -9,7 +9,8 @@ namespace palace {
 
 class VulkanWinApiContext : public VulkanContext {
     PALACE_OBJECT_DATA(VulkanWinApiContext, GraphicsApiObject,
-                       "Top level Vulkan API context for WinAPI.")
+                       "Top level Vulkan API context for WinAPI.");
+
 public:
     struct Parameters {
         VulkanContext::Parameters baseParameters;
@@ -31,4 +32,4 @@ private:
 
 }// namespace palace
 
-#endif /* ATG_PALACE_ENGINE_WINAPI_CONTEXT_HPP */
+#endif /* ATG_PALACE_ENGINE_VULKAN_WINAPI_CONTEXT_HPP */

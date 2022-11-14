@@ -13,7 +13,7 @@ namespace palace {
 
 class ApplicationContext : public PlatformObject {
     PALACE_OBJECT_DATA(ApplicationContext, PlatformObject,
-                       "Application-level context.")
+                       "Application-level context.");
 
     friend EngineContext;
     using GraphicsContextContainer =

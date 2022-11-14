@@ -9,8 +9,7 @@ namespace palace {
 
 class CocoaWindowServer;
 class CocoaWindow : public Window {
-    PALACE_OBJECT_DATA(CocoaWindow, Window,
-                       "Display device type for Mac OS.")
+    PALACE_OBJECT_DATA(CocoaWindow, Window, "Display device type for Mac OS.");
 
     friend CocoaWindowServer;
 
@@ -27,10 +26,10 @@ public:
 
 protected:
     virtual void initialize(const Parameters &parameters) override;
-    
+
 private:
     CocoaWindowServer *m_server;
-    
+
 #if PALACE_SUPPORTS_COCOA
     cocoa_interface::WindowHandle m_window;
 #endif /* PALACE_SUPPORTS_COCOA */

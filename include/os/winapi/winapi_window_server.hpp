@@ -13,7 +13,7 @@ namespace palace {
 class WinApiApplicationContext;
 class WinApiWindowServer : public WindowServer {
     PALACE_OBJECT_DATA(WinApiWindowServer, WindowServer,
-                       "Window server for Windows OSs.")
+                       "Window server for Windows OSs.");
 
     friend WinApiApplicationContext;
 
