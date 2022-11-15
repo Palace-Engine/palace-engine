@@ -10,9 +10,9 @@ enum class Result {
     Success,
 
     // Failure
-    ApiError,
-    Unsupported,
-    OutOfBounds
+    ErrorApiFailure,
+    ErrorUnsupported,
+    ErrorOutOfBounds
 };
 
 inline bool isSuccessful(Result result) { return result == Result::Success; }

@@ -12,7 +12,7 @@ palace::WindowServer::WindowServer(Platform platform, WindowContainer *windows,
 palace::WindowServer::~WindowServer() {}
 
 void palace::WindowServer::free() {
-    PALACE_LOG_INFO_OPT("Freeing window server");
+    PALACE_LOG_INFO_OPT("Freeing window server: {}", DefaultObjectFormatter(this));
 
     freeAllWindows();
 
@@ -24,7 +24,9 @@ void palace::WindowServer::free() {
 }
 
 void palace::WindowServer::freeWindow(Window *&window) {
-    m_windows->freeBase(window);
+    window->removeReference();
+    window->setDeleted();
+    m_windows->prune();
     window = nullptr;
 }
 
@@ -32,11 +34,14 @@ void palace::WindowServer::freeInactiveWindows() {
     const size_t windowCount = m_windows->size();
     for (size_t i = windowCount; i >= 1; --i) {
         Window *window = m_windows->get(i - 1);
-        if (!window->isOpen()) {
-            freeWindow(window);
+        if (!window->isOpen() && window->isDeleted()) {
+            window->removeReference();
+            window->setDeleted();
             ++i;
         }
     }
+
+    m_windows->prune();
 }
 
 void palace::WindowServer::freeAllWindows() {
@@ -45,13 +50,21 @@ void palace::WindowServer::freeAllWindows() {
         Window *window = m_windows->get(0);
         if (window->isOpen()) { window->close(); }
 
-        freeWindow(window);
+        if (!window->isDeleted()) {
+            window->removeReference();
+            window->setDeleted();
+        }
     }
+
+    m_windows->prune();
 }
 
 void palace::WindowServer::freeDisplayDevice(DisplayDevice *&device) {
-    m_displayDevices->freeBase(device);
+    device->removeReference();
+    device->setDeleted();
     device = nullptr;
+
+    m_displayDevices->prune();
 }
 
 palace::DisplayDevice *

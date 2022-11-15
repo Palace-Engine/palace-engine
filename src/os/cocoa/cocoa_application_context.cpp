@@ -8,14 +8,17 @@ palace::CocoaApplicationContext::CocoaApplicationContext()
 palace::CocoaApplicationContext::~CocoaApplicationContext() {}
 
 void palace::CocoaApplicationContext::initialize() {
-    addObject(&m_windowServer);
+    registerObject(&m_windowServer);
+    m_windowServer.addReference();
 
 #if PALACE_SUPPORTS_COCOA
     m_context = cocoa_interface::createContext();
 #endif
 }
 
-void palace::CocoaApplicationContext::free() {
+void palace::CocoaApplicationContext::internalFree() {
+    ApplicationContext::internalFree();
+
 #if PALACE_SUPPORTS_COCOA
     cocoa_interface::freeContext(m_context);
 #endif

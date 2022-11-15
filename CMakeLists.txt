@@ -72,7 +72,10 @@ add_library(palace-engine-base STATIC
         src/core/object_container.cpp
         src/graphics/graphics_api_object.cpp
         src/graphics/graphics_context.cpp
+        src/graphics/graphics_device.cpp
+        src/graphics/graphics_render_target.cpp
         src/graphics/vulkan/vulkan_context.cpp
+        src/graphics/vulkan/vulkan_device.cpp
         src/graphics/vulkan/vulkan_winapi_context.cpp
         src/memory/default_allocator.cpp
         src/logging/log_target.cpp
@@ -108,7 +111,10 @@ add_library(palace-engine-base STATIC
         include/graphics/graphics_api.hpp
         include/graphics/graphics_api_object.hpp
         include/graphics/graphics_context.hpp
+        include/graphics/graphics_device.hpp
+        include/graphics/graphics_render_target.hpp
         include/graphics/graphics_support.hpp
+        include/graphics/vulkan/vulkan_context.hpp
         include/graphics/vulkan/vulkan_context.hpp
         include/graphics/vulkan/vulkan_formatters.hpp
         include/graphics/vulkan/vulkan_includes.hpp

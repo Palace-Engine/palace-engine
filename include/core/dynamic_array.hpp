@@ -112,6 +112,11 @@ public:
 
     void truncate(size_t size) { m_size = (size < m_size) ? size : m_size; }
 
+    void fastPreallocate(size_t size) {
+        resize(size);
+        m_size = size;
+    }
+
     void resize(size_t size) {
         T_Data *newData = m_allocator->palace_new_array(T_Data, size);
         const size_t newSize = (size < m_size) ? size : m_size;

@@ -41,15 +41,15 @@ public:
     VulkanVersion highestSupportedVulkanVersion() const;
     virtual GraphicsContext *
     createVulkanContext(const VulkanVersion &version) = 0;
+    void freeGraphicsContext(GraphicsContext *&context);
 
     void initialize(const DefaultParameters &params);
     void addCommandLineArgument(const string &s);
-    virtual void internalFree();
 
 protected:
-    GraphicsContextContainer &graphicsContexts() { return m_graphicsContexts; }
+    virtual void internalFree();
+    GraphicsContextContainer &graphicsContexts() { return m_graphicsContexts; }    
 
-private:
     DynamicArray<string> m_commandLineArguments;
     WindowServer *m_windowServer;
     GraphicsContextContainer m_graphicsContexts;

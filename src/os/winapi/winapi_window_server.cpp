@@ -34,7 +34,8 @@ palace::WinApiWindowServer::spawnWindow(const Window::Parameters &params) {
     }
 
     WinApiWindow *newWindow = m_windows.create();
-    addObject(newWindow);
+    registerObject(newWindow);
+    newWindow->addReference();
     PALACE_LOG_INFO("Created new window object with id=@{}", newWindow->id());
 
     HWND newWindowHandle;
@@ -75,6 +76,7 @@ palace::WinApiWindowServer::spawnWindow(const Window::Parameters &params) {
     return static_cast<palace::Window *>(newWindow);
 
 failed:
+    newWindow->removeReference();
     m_windows.free(newWindow);
     return nullptr;
 }
@@ -151,7 +153,8 @@ BOOL CALLBACK palace::WinApiWindowServer::monitorCallback(HMONITOR hMonitor,
 
     if (monitor == nullptr) {
         monitor = windowServer->m_displayDevices.create();
-        windowServer->addObject(monitor);
+        windowServer->registerObject(monitor);
+        monitor->addReference();
         monitor->setDeviceName(info.szDevice);
     }
 

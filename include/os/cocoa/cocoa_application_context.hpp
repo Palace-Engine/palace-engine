@@ -21,10 +21,12 @@ public:
     virtual ~CocoaApplicationContext();
 
     void initialize();
-    void free();
 
     virtual GraphicsContext *
     createVulkanContext(const VulkanVersion &version) override;
+
+protected:
+    virtual void internalFree() override;
 
 private:
     CocoaWindowServer m_windowServer;

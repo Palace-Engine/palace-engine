@@ -5,6 +5,7 @@
 
 #include "../platform/platform.hpp"
 #include "../types/string.hpp"
+#include "graphics_render_target.hpp"
 
 namespace palace {
 
@@ -22,7 +23,7 @@ public:
 
     Result initialize(const Parameters &parameters) { return Result::Success; }
 
-    virtual void enumerateDevices() = 0;
+    virtual Result enumerateDevices() = 0;
     virtual size_t deviceCount() = 0;
     virtual string deviceName(size_t i) = 0;
 

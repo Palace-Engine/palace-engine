@@ -3,6 +3,8 @@
 
 #include "dynamic_array.hpp"
 
+#include "engine_object.hpp"
+
 namespace palace {
 
 class ObjectContainerAllocator {
@@ -30,6 +32,7 @@ public:
     virtual void free(size_t i) = 0;
     virtual void freeBase(T_Base *object) = 0;
     virtual void free() = 0;
+    virtual void prune() = 0;
     inline T_Base *operator[](size_t i) const { return get(i); }
 };
 
@@ -49,13 +52,26 @@ public:
         return static_cast<T_Base *>(m_array[i]);
     }
     virtual inline void free(size_t i) override {
+        m_array[i]->free();
+
         m_allocator->palace_aligned_free(m_array[i]);
         m_array.fastRemove(i);
+
+        if (m_array.size() > 0) { m_array[i]->m_index = i; }
     }
     virtual inline void freeBase(T_Base *object) override {
         free(findFirstBase(object));
     }
     inline void free(T_Object *object) { free(findFirst(object)); }
+    virtual void prune() {
+        const size_t n = m_array.size();
+        for (size_t i = n; i > 0; --i) {
+            EngineObject *base = static_cast<EngineObject *>(m_array[i - 1]);
+            if (base->isDeleted() && base->references() == 0) {
+                free(i - 1);
+            }
+        }
+    }
 
     template<typename T_NewObject = T_Object>
     inline T_NewObject *create() {
@@ -63,25 +79,18 @@ public:
                 m_allocator->palace_aligned_new(T_NewObject, alignment);
         m_array.append(static_cast<T_Object *>(newObject));
 
+        EngineObject *base = static_cast<EngineObject *>(newObject);
+        base->m_index = m_array.size() - 1;
+
         return newObject;
     }
 
     inline size_t findFirst(const T_Object *object) const {
-        const size_t size = m_array.size();
-        for (size_t i = 0; i < size; ++i) {
-            if (m_array[i] == object) { return i; }
-        }
-
-        return static_cast<size_t>(-1);
+        return static_cast<const EngineObject *>(object)->m_index;
     }
 
     inline size_t findFirstBase(const T_Base *object) const {
-        const size_t size = m_array.size();
-        for (size_t i = 0; i < size; ++i) {
-            if (static_cast<T_Base *>(m_array[i]) == object) { return i; }
-        }
-
-        return static_cast<size_t>(-1);
+        return static_cast<const EngineObject *>(object)->m_index;
     }
 
     virtual void free() override {
@@ -95,13 +104,12 @@ public:
     }
 
     DynamicArray<T_Object *> &container() const { return m_array; }
-    T_BaseContainer *base() {
-        return static_cast<T_BaseContainer *>(this);
-    }
+    T_BaseContainer *base() { return static_cast<T_BaseContainer *>(this); }
 
 private:
     HeapAllocator *m_allocator = nullptr;
     DynamicArray<T_Object *> m_array;
+    DynamicArray<EngineObject *> m_deleted;
 };
 
 }// namespace palace

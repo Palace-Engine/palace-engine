@@ -34,7 +34,8 @@ palace::WinApiApplicationContext::WinApiApplicationContext()
 palace::WinApiApplicationContext::~WinApiApplicationContext() {}
 
 void palace::WinApiApplicationContext::initialize(const Parameters &params) {
-    addObject(&m_windowServer);
+    m_windowServer.addReference();
+    registerObject(&m_windowServer);
 
     PALACE_LOG_INFO("Created window server with id=@{}", m_windowServer.id());
 
@@ -70,7 +71,7 @@ palace::GraphicsContext *palace::WinApiApplicationContext::createVulkanContext(
 
     VulkanWinApiContext *newContext =
             graphicsContexts().create<VulkanWinApiContext>();
-    addObject(static_cast<GraphicsContext *>(newContext));
+    registerObject(static_cast<GraphicsContext *>(newContext));
     VulkanWinApiContext::Parameters parameters = {
             .baseParameters = {.baseParameters = {}},
             .windowServer = &m_windowServer

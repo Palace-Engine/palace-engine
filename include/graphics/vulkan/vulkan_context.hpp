@@ -28,7 +28,7 @@ public:
 public:
     virtual ~VulkanContext() override;
 
-    virtual void enumerateDevices() override;
+    virtual Result enumerateDevices() override;
     virtual size_t deviceCount() override;
     virtual string deviceName(size_t i) override;
 

@@ -45,7 +45,7 @@ palace::Result palace::VulkanContext::initialize(const Parameters &parameters) {
 
     if (result != VkResult::VK_SUCCESS) {
         PALACE_LOG_ERROR("vkCreateInstance failed with error: {}", result);
-        return Result::ApiError;
+        return Result::ErrorApiFailure;
     }
 
     m_instance = instance;
@@ -56,39 +56,48 @@ palace::Result palace::VulkanContext::initialize(const Parameters &parameters) {
 #endif
 }
 
-void palace::VulkanContext::enumerateDevices() {
+palace::Result palace::VulkanContext::enumerateDevices() {
 #if PALACE_SUPPORTS_VULKAN
     VkResult result;
+
+    m_physicalDevices.resize(0);
 
     uint32_t deviceCount;
     result = vkEnumeratePhysicalDevices(m_instance, &deviceCount, nullptr);
     if (result != VkResult::VK_SUCCESS) {
         PALACE_LOG_ERROR("vkEnumeratePhysicalDevices failed with error: {}",
                          result);
-        return;
+        return Result::ErrorApiFailure;
     }
 
     DynamicArray<VkPhysicalDevice> devices;
-    devices.resize(static_cast<size_t>(deviceCount));
+    devices.fastPreallocate(static_cast<size_t>(deviceCount));
     result = vkEnumeratePhysicalDevices(m_instance, &deviceCount,
                                         devices.writeable());
     if (result != VkResult::VK_SUCCESS) {
         PALACE_LOG_ERROR("vkEnumeratePhysicalDevices failed with error: {}",
                          result);
-        return;
+        return Result::ErrorApiFailure;
     }
 
-    VkPhysicalDeviceProperties deviceProperties;
-    m_physicalDevices.resize(static_cast<size_t>(deviceCount));
+    m_physicalDevices.fastPreallocate(static_cast<size_t>(deviceCount));
     for (size_t i = 0; i < static_cast<size_t>(deviceCount); ++i) {
-        vkGetPhysicalDeviceProperties(devices[i], &m_physicalDevices[i].properties);
+        vkGetPhysicalDeviceProperties(devices[i],
+                                      &m_physicalDevices[i].properties);
+        m_physicalDevices[i].vulkanHandle = devices[i];
     }
+
+    return Result::Success;
+#else
+    return Result::Unsupported
 #endif
 }
 
-size_t palace::VulkanContext::deviceCount() { return 0; }
+size_t palace::VulkanContext::deviceCount() { return m_physicalDevices.size(); }
 
-palace::string palace::VulkanContext::deviceName(size_t i) { return ""; }
+palace::string palace::VulkanContext::deviceName(size_t i) {
+    return m_physicalDevices[i].properties.deviceName;
+}
 
 palace::VulkanContext::VulkanContext(Platform platform)
     : GraphicsContext(platform, GraphicsApi::Vulkan) {

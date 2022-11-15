@@ -30,7 +30,8 @@ palace::CocoaWindowServer::spawnWindow(const Window::Parameters &params) {
     }
 
     CocoaWindow *newWindow = m_windows.create();
-    addObject(newWindow);
+    registerObject(newWindow);
+    newWindow->addReference();
     PALACE_LOG_INFO("Created new window object with id=@{}", newWindow->id());
 
     newWindow->initialize(params);
@@ -51,7 +52,8 @@ void palace::CocoaWindowServer::updateDisplayDevices() {
         CocoaDisplayDevice *monitor = findDisplayDevice(monitorData.deviceName);
         if (monitor == nullptr) {
             monitor = m_displayDevices.create();
-            addObject(monitor);
+            registerObject(monitor);
+            monitor->addReference();
             monitor->setDeviceName(monitorData.deviceName);
         }
 

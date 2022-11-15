@@ -2,7 +2,7 @@
 
 #include "../include/core/object_container.hpp"
 
-class TestBase {};
+class TestBase : public palace::EngineObject {};
 class TestChild : public TestBase {};
 
 TEST(ObjectContainerTest, SanityTest) {
